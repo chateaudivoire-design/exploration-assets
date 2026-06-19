@@ -367,11 +367,12 @@
 
   /* CONFIRMATOR FOOTER */
   .confirmator-footer {
-    position: fixed; bottom: 0; left: 0; right: 0;
     background: var(--black-leather);
     padding: 40px;
     border-top: none;
     z-index: 200; padding: 20px 40px;
+    margin-top: -280px;
+    padding-bottom: 280px;
   }
   .confirmator-inner { display: flex; gap: 0; max-width: 1200px; margin: 0 auto; }
   .confirmator-left { flex: 1; padding-right: 48px; }
@@ -1597,6 +1598,16 @@ function goToPage(idx) {
     renderMaterialDisplays();
   }
 }
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      left: 0,
+      behavior: 'smooth'
+    });
+  }, 80);
+});
 
 // ============================================================
 // STEP 1
