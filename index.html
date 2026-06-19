@@ -31,9 +31,15 @@
 
   /* NAV */
   .site-nav {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 28px; border-bottom: var(--stroke) solid #e0ddd8;
+    width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    padding: 14px 0; border-bottom: var(--stroke) solid #e0ddd8;
     background: var(--white); position: sticky; top: 0; z-index: 100;
+  }
+  .nav-inner {
+    width: 100%; max-width: 1600px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px;
   }
   .nav-logo { font-family: 'Playfair Display', serif; font-size: 13px; letter-spacing: 0.12em; color: var(--dark-gold); font-weight: 400; }
   .nav-left { display: flex; align-items: center; gap: 20px; }
@@ -50,6 +56,12 @@
     padding: 36px 40px 28px;
     position: relative; overflow: hidden;
     min-height: 200px;
+    width: 100%;
+  }
+  .hero-inner, .content-inner, .nav-inner {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
   }
   .hero-eyebrow { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.75); letter-spacing: 0.06em; margin-bottom: 8px; }
   .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(36px, 6vw, 56px); color: var(--white); font-weight: 400; line-height: 1.05; }
@@ -68,9 +80,15 @@
 
   /* PROJECT TITLE ZONE */
   .project-zone {
-    padding: 32px 40px 24px;
+    width: 100%;
     background: var(--white);
     min-height: 80px;
+  }
+  .project-zone-inner {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 32px 40px 24px;
   }
   .project-type { font-size: 13px; color: var(--dark-gold); font-weight: 400; margin-bottom: 4px; letter-spacing: 0.04em; }
   .project-name { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 42px); color: var(--dark-gold); font-weight: 400; }
@@ -475,16 +493,18 @@
 
 <!-- SITE NAV -->
 <nav class="site-nav">
-  <div class="nav-left">
-    <div class="nav-hamburger" aria-label="Menu">
-      <span></span><span></span><span></span>
+  <div class="nav-inner">
+    <div class="nav-left">
+      <div class="nav-hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </div>
+      <span class="nav-logo">CHATEAU D'IVOIRE</span>
     </div>
-    <span class="nav-logo">CHATEAU D'IVOIRE</span>
-  </div>
-  <div class="nav-right">
-    <span class="nav-badge">2</span>
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <div class="nav-right">
+      <span class="nav-badge">2</span>
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    </div>
   </div>
 </nav>
 
@@ -492,12 +512,14 @@
 <!-- ==================== PAGE: FIRST STEP ==================== -->
 <div class="page active page-transition" id="page-first">
   <div class="hero">
-    <div class="hero-eyebrow">Custom Jewelry Creation</div>
-    <h1 class="hero-title">Exploration</h1>
-    <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
-    <div class="hero-icon"><span class="castle-icon"></span></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Custom Jewelry Creation</div>
+      <h1 class="hero-title">Exploration</h1>
+      <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
+      <div class="hero-icon"><span class="castle-icon"></span></div>
+    </div>
   </div>
-  <div class="project-zone" id="first-project-zone" style="min-height:100px;"></div>
+  <div class="project-zone" id="first-project-zone" style="min-height:100px;"><div class="project-zone-inner"></div></div>
   <div class="scrollable-content" style="height: 220px;"></div>
   <!-- FOOTER -->
   <div class="sticky-footer" id="footer-first">
@@ -533,14 +555,18 @@
 <!-- ==================== PAGE: SECOND STEP ==================== -->
 <div class="page" id="page-second">
   <div class="hero">
-    <div class="hero-eyebrow">Custom Jewelry Creation</div>
-    <h1 class="hero-title">Exploration</h1>
-    <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
-    <div class="hero-icon"><span class="castle-icon"></span></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Custom Jewelry Creation</div>
+      <h1 class="hero-title">Exploration</h1>
+      <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
+      <div class="hero-icon"><span class="castle-icon"></span></div>
+    </div>
   </div>
-  <div class="project-zone" id="second-project-zone"></div>
+  <div class="project-zone" id="second-project-zone"><div class="project-zone-inner"></div></div>
   <div class="main-content scrollable-content">
-    <div class="image-grid" id="image-grid-second"></div>
+    <div class="content-inner">
+      <div class="image-grid" id="image-grid-second"></div>
+    </div>
   </div>
   <input type="file" id="file-input" accept="image/*" multiple>
   <!-- FOOTER -->
@@ -571,18 +597,22 @@
 <!-- ==================== PAGE: THIRD STEP ==================== -->
 <div class="page" id="page-third">
   <div class="hero">
-    <div class="hero-eyebrow">Custom Jewelry Creation</div>
-    <h1 class="hero-title">Exploration</h1>
-    <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
-    <div class="hero-icon"><span class="castle-icon"></span></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Custom Jewelry Creation</div>
+      <h1 class="hero-title">Exploration</h1>
+      <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
+      <div class="hero-icon"><span class="castle-icon"></span></div>
+    </div>
   </div>
-  <div class="project-zone" id="third-project-zone"></div>
+  <div class="project-zone" id="third-project-zone"><div class="project-zone-inner"></div></div>
   <div class="main-content scrollable-content">
-    <div class="image-grid" id="image-grid-third"></div>
-    <div class="selection-cards">
-      <div class="selection-card">
-        <div class="selection-card-title">Gemstone Selection</div>
-        <div class="selected-items" id="gemstone-selected-display"></div>
+    <div class="content-inner">
+      <div class="image-grid" id="image-grid-third"></div>
+      <div class="selection-cards">
+        <div class="selection-card">
+          <div class="selection-card-title">Gemstone Selection</div>
+          <div class="selected-items" id="gemstone-selected-display"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -627,22 +657,26 @@
 <!-- ==================== PAGE: FOURTH STEP ==================== -->
 <div class="page" id="page-fourth">
   <div class="hero">
-    <div class="hero-eyebrow">Custom Jewelry Creation</div>
-    <h1 class="hero-title">Exploration</h1>
-    <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
-    <div class="hero-icon"><span class="castle-icon"></span></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Custom Jewelry Creation</div>
+      <h1 class="hero-title">Exploration</h1>
+      <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
+      <div class="hero-icon"><span class="castle-icon"></span></div>
+    </div>
   </div>
-  <div class="project-zone" id="fourth-project-zone"></div>
+  <div class="project-zone" id="fourth-project-zone"><div class="project-zone-inner"></div></div>
   <div class="main-content scrollable-content">
-    <div class="image-grid" id="image-grid-fourth"></div>
-    <div class="selection-cards">
-      <div class="selection-card">
-        <div class="selection-card-title">Gemstone Selection</div>
-        <div class="selected-items" id="gemstone-display-4"></div>
-      </div>
-      <div class="selection-card">
-        <div class="selection-card-title">Material Selection</div>
-        <div class="selected-items" id="material-selected-display"></div>
+    <div class="content-inner">
+      <div class="image-grid" id="image-grid-fourth"></div>
+      <div class="selection-cards">
+        <div class="selection-card">
+          <div class="selection-card-title">Gemstone Selection</div>
+          <div class="selected-items" id="gemstone-display-4"></div>
+        </div>
+        <div class="selection-card">
+          <div class="selection-card-title">Material Selection</div>
+          <div class="selected-items" id="material-selected-display"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -688,26 +722,30 @@
 <!-- ==================== PAGE: FINAL STEP ==================== -->
 <div class="page" id="page-final">
   <div class="hero">
-    <div class="hero-eyebrow">Custom Jewelry Creation</div>
-    <h1 class="hero-title">Exploration</h1>
-    <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
-    <div class="hero-icon"><span class="castle-icon"></span></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Custom Jewelry Creation</div>
+      <h1 class="hero-title">Exploration</h1>
+      <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
+      <div class="hero-icon"><span class="castle-icon"></span></div>
+    </div>
   </div>
-  <div class="project-zone" id="final-project-zone">
+  <div class="project-zone" id="final-project-zone"><div class="project-zone-inner">
     <button class="btn-edit-project" id="btn-edit-project">
       <span class="edit-arrow"></span>Edit Project
     </button>
-  </div>
+  </div></div>
   <div class="main-content scrollable-content">
-    <div class="image-grid" id="image-grid-final"></div>
-    <div class="selection-cards" style="margin-bottom: 0; padding-bottom: 32px;">
-      <div class="selection-card">
-        <div class="selection-card-title">Gemstone Selection</div>
-        <div class="selected-items" id="gemstone-display-final"></div>
-      </div>
-      <div class="selection-card">
-        <div class="selection-card-title">Material Selection</div>
-        <div class="selected-items" id="material-display-final"></div>
+    <div class="content-inner">
+      <div class="image-grid" id="image-grid-final"></div>
+      <div class="selection-cards" style="margin-bottom: 0; padding-bottom: 32px;">
+        <div class="selection-card">
+          <div class="selection-card-title">Gemstone Selection</div>
+          <div class="selected-items" id="gemstone-display-final"></div>
+        </div>
+        <div class="selection-card">
+          <div class="selection-card-title">Material Selection</div>
+          <div class="selected-items" id="material-display-final"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1407,22 +1445,24 @@ function checkGemReady() {
 function updateProjectZones() {
   const zones = ['first','second','third','fourth','final'];
   zones.forEach(z => {
-    const el = document.getElementById(`${z}-project-zone`);
-    if (!el) return;
+    const outer = document.getElementById(`${z}-project-zone`);
+    if (!outer) return;
+    const inner = outer.querySelector('.project-zone-inner');
+    if (!inner) return;
     const infoHtml = (state.jewelryType || state.projectName) ? `
       ${state.jewelryType ? `<div class="project-type">${state.jewelryType}</div>` : ''}
       ${state.projectName ? `<h2 class="project-name title-font">${state.projectName}</h2>` : ''}
     ` : '';
     if (z === 'final') {
       // Keep the edit button; only update the info prefix
-      el.innerHTML = infoHtml + `
+      inner.innerHTML = infoHtml + `
         <button class="btn-edit-project" id="btn-edit-project">
           <span class="edit-arrow"></span>Edit Project
         </button>`;
       // Re-attach listener after innerHTML reset
       document.getElementById('btn-edit-project').addEventListener('click', handleEditProject);
     } else {
-      el.innerHTML = infoHtml;
+      inner.innerHTML = infoHtml;
     }
   });
 }
