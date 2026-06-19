@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exploration — Chateau d'Ivoire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark-green: #364b37;
+    --dark-gold: #907843;
+    --light-linen: #e8e6e1;
+    --white: #ffffff;
+    --dark-leather: #766C63;
+    --black-leather: #221F20;
+    --radius: 6px;
+    --stroke: 1px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    background: var(--white);
+    color: var(--black-leather);
+    min-height: 100vh;
+  }
+
+  /* TYPOGRAPHY */
+  .title-font { font-family: 'Playfair Display', serif; font-weight: 400; }
+
+  /* NAV */
+  .site-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 28px; border-bottom: var(--stroke) solid #e0ddd8;
+    background: var(--white); position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 13px; letter-spacing: 0.12em; color: var(--dark-gold); font-weight: 400; }
+  .nav-left { display: flex; align-items: center; gap: 20px; }
+  .nav-hamburger { cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
+  .nav-hamburger span { width: 20px; height: 1px; background: var(--black-leather); display: block; }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-badge { font-size: 11px; font-weight: 500; color: var(--dark-gold); }
+  .nav-icon { width: 20px; height: 20px; cursor: pointer; color: var(--black-leather); }
+
+  /* HERO */
+  .hero {
+    background: var(--dark-gold);
+    padding: 36px 40px 28px;
+    position: relative; overflow: hidden;
+    min-height: 200px;
+  }
+  .hero-eyebrow { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.75); letter-spacing: 0.06em; margin-bottom: 8px; }
+  .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(36px, 6vw, 56px); color: var(--white); font-weight: 400; line-height: 1.05; }
+  .hero-breadcrumb { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 20px; letter-spacing: 0.04em; }
+  .hero-breadcrumb span { opacity: 0.7; }
+  .hero-icon { position: absolute; right: 40px; top: 50%; transform: translateY(-50%); opacity: 0.9; }
+  .castle-icon { width: 64px; height: 64px; }
+
+  /* PROJECT TITLE ZONE */
+  .project-zone {
+    padding: 32px 40px 24px;
+    background: var(--white);
+    min-height: 80px;
+  }
+  .project-type { font-size: 13px; color: var(--dark-gold); font-weight: 400; margin-bottom: 4px; letter-spacing: 0.04em; }
+  .project-name { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 42px); color: var(--dark-gold); font-weight: 400; }
+
+  /* MAIN CONTENT */
+  .main-content { padding: 0 40px 32px; background: var(--white); }
+
+  /* IMAGE GRID */
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+  .image-grid img {
+    width: 100%; height: 220px; object-fit: cover;
+    display: block; border-radius: 2px;
+  }
+  .image-grid .img-large { grid-column: span 1; }
+
+  /* SELECTION CARDS */
+  .selection-cards {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin-top: 16px;
+  }
+  .selection-card {
+    background: var(--light-linen); border-radius: var(--radius);
+    padding: 20px 24px; min-height: 120px;
+  }
+  .selection-card-title { font-size: 13px; color: var(--dark-gold); font-weight: 400; margin-bottom: 16px; letter-spacing: 0.04em; }
+  .selected-items { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+  .selected-gem, .selected-material {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    cursor: pointer; position: relative;
+  }
+  .selected-gem-img, .selected-material-img {
+    width: 52px; height: 52px; position: relative;
+  }
+  .selected-gem-img svg, .selected-material-img svg { width: 100%; height: 100%; }
+  .selected-item-label { font-size: 10px; text-align: center; color: var(--dark-leather); line-height: 1.3; }
+  .remove-btn {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--light-linen); border: var(--stroke) solid var(--dark-leather);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--dark-leather); cursor: pointer;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .selected-gem:hover .remove-btn,
+  .selected-material:hover .remove-btn { opacity: 1; }
+
+  /* STICKY FOOTER */
+  .sticky-footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--light-linen);
+    border-top: var(--stroke) solid #d4d0c8;
+    z-index: 200; padding: 20px 40px;
+  }
+  .footer-inner {
+    display: flex; align-items: flex-start; gap: 0;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .footer-left { flex: 1; padding-right: 32px; }
+  .footer-divider { width: var(--stroke); background: #c8c4bc; align-self: stretch; margin: 0 32px; flex-shrink: 0; }
+  .footer-right { display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 140px; }
+
+  /* STEP INDICATOR */
+  .step-indicator { position: relative; width: 72px; height: 72px; }
+  .step-indicator svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .step-track { fill: none; stroke: #d4d0c8; stroke-width: 2.5; }
+  .step-progress { fill: none; stroke: var(--dark-gold); stroke-width: 2.5; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
+  .step-label {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    text-align: center; font-size: 11px; color: var(--dark-leather); font-weight: 400;
+    line-height: 1.4;
+  }
+
+  /* NAV ARROWS */
+  .nav-arrows { display: flex; gap: 10px; }
+  .nav-arrow {
+    width: 44px; height: 36px; border-radius: 20px;
+    border: var(--stroke) solid var(--dark-leather);
+    background: var(--white); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; color: var(--dark-leather);
+  }
+  .nav-arrow:hover { background: var(--dark-leather); color: var(--white); }
+  .nav-arrow:disabled { opacity: 0.35; cursor: default; }
+  .nav-arrow:disabled:hover { background: var(--white); color: var(--dark-leather); }
+  .btn-finish {
+    padding: 10px 24px; border-radius: 20px;
+    border: var(--stroke) solid var(--dark-leather);
+    background: var(--white); font-family: 'Montserrat', sans-serif;
+    font-size: 12px; font-weight: 400; color: var(--dark-leather);
+    cursor: pointer; transition: all 0.2s; letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .btn-finish:hover { background: var(--dark-leather); color: var(--white); }
+  .btn-finish.active { background: var(--dark-gold); border-color: var(--dark-gold); color: var(--white); }
+
+  /* STEP 1 FOOTER */
+  .jewelry-types { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+  .jewelry-type-item { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: var(--black-leather); }
+  .radio-circle {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: var(--stroke) solid var(--dark-leather);
+    background: var(--white); flex-shrink: 0; position: relative;
+    transition: all 0.2s;
+  }
+  .radio-circle.selected { border-color: var(--dark-gold); background: var(--dark-gold); }
+  .radio-circle.selected::after {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px; height: 6px; border-radius: 50%; background: var(--white);
+  }
+  .project-name-input {
+    width: 100%; max-width: 420px; margin-top: 16px;
+    padding: 12px 16px; border: var(--stroke) solid var(--dark-leather);
+    border-radius: var(--radius); background: var(--white);
+    font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--black-leather);
+    outline: none;
+  }
+  .project-name-input::placeholder { color: #b0aba3; }
+  .project-name-input:focus { border-color: var(--dark-gold); }
+  .footer-label { font-size: 11px; color: var(--dark-leather); margin-bottom: 12px; letter-spacing: 0.04em; }
+
+  /* STEP 2 FOOTER */
+  .upload-zone {
+    border: var(--stroke) dashed var(--dark-leather);
+    border-radius: var(--radius); padding: 28px 20px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    cursor: pointer; transition: background 0.2s; min-height: 100px;
+    justify-content: center;
+  }
+  .upload-zone:hover, .upload-zone.drag-over { background: rgba(144,120,67,0.06); }
+  .upload-zone-text { font-size: 12px; color: var(--dark-leather); }
+  .btn-upload {
+    padding: 9px 22px; border-radius: 20px;
+    border: var(--stroke) solid var(--dark-leather);
+    background: var(--white); font-family: 'Montserrat', sans-serif;
+    font-size: 12px; color: var(--dark-leather); cursor: pointer;
+    transition: all 0.2s; letter-spacing: 0.04em;
+  }
+  .btn-upload:hover { background: var(--dark-leather); color: var(--white); }
+  #file-input { display: none; }
+
+  /* LOADING OVERLAY */
+  .loading-overlay {
+    position: fixed; inset: 0; background: var(--light-linen);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 500; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .loading-overlay.visible { opacity: 1; pointer-events: all; }
+  .spinner { width: 56px; height: 56px; animation: spin 1.2s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* STEP 3 FOOTER */
+  .gem-footer { display: flex; gap: 32px; flex: 1; }
+  .gem-section { flex: 1; }
+  .gem-color-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px 8px; margin-top: 10px; }
+  .gem-color-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+  .gem-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; transition: all 0.2s; }
+  .gem-dot.selected { border-color: var(--dark-gold); box-shadow: 0 0 0 2px var(--dark-gold); }
+  .gem-color-item.selected-item > .gem-dot { border-color: var(--dark-gold); }
+  .gem-color-label { font-size: 9px; color: var(--dark-leather); text-align: center; }
+  .gem-cut-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px 8px; margin-top: 10px; }
+  .gem-cut-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+  .gem-cut-icon {
+    width: 44px; height: 44px; border-radius: var(--radius);
+    border: var(--stroke) solid #c8c4bc;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; background: var(--white);
+  }
+  .gem-cut-icon.selected { border-color: var(--dark-gold); border-width: 1.5px; }
+  .gem-cut-icon svg { width: 28px; height: 28px; }
+  .gem-cut-label { font-size: 9px; color: var(--dark-leather); }
+  .btn-add-to-project {
+    margin-top: 14px; padding: 10px 28px; border-radius: 20px;
+    border: var(--stroke) solid var(--dark-leather);
+    background: var(--white); font-family: 'Montserrat', sans-serif;
+    font-size: 12px; color: var(--dark-leather); cursor: pointer;
+    transition: all 0.2s; display: block; letter-spacing: 0.04em;
+    opacity: 0.4; pointer-events: none;
+  }
+  .btn-add-to-project.ready { opacity: 1; pointer-events: all; }
+  .btn-add-to-project.ready:hover { background: var(--dark-gold); border-color: var(--dark-gold); color: var(--white); }
+
+  /* STEP 4 FOOTER */
+  .material-grid { display: flex; gap: 24px; margin-top: 10px; }
+  .material-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+  .material-sphere {
+    width: 52px; height: 52px; border-radius: 50%;
+    border: 2px solid transparent; transition: all 0.2s;
+  }
+  .material-sphere.selected { border-color: var(--dark-gold); box-shadow: 0 0 0 2px rgba(144,120,67,0.3); }
+  .material-sphere.white-gold { background: radial-gradient(circle at 35% 35%, #f0f0f0, #c8c8c8, #888); }
+  .material-sphere.yellow-gold { background: radial-gradient(circle at 35% 35%, #f5e070, #c9a227, #8a6a0a); }
+  .material-sphere.rose-gold { background: radial-gradient(circle at 35% 35%, #f5c5a3, #d4836a, #9a4a2a); }
+  .material-label { font-size: 10px; color: var(--dark-leather); text-align: center; line-height: 1.3; }
+
+  /* CONFIRMATOR FOOTER */
+  .confirmator-footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--black-leather);
+    padding: 40px;
+    border-top: none;
+  }
+  .confirmator-inner { display: flex; gap: 0; max-width: 1200px; margin: 0 auto; }
+  .confirmator-left { flex: 1; padding-right: 48px; }
+  .confirmator-divider { width: var(--stroke); background: rgba(255,255,255,0.15); align-self: stretch; margin: 0 48px; flex-shrink: 0; }
+  .confirmator-right { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 16px; padding-top: 4px; }
+  .confirmator-title { font-family: 'Playfair Display', serif; font-size: clamp(22px, 3vw, 32px); color: var(--dark-gold); margin-bottom: 14px; font-weight: 400; }
+  .confirmator-body { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.7; margin-bottom: 20px; font-weight: 300; }
+  .confirmator-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-book {
+    padding: 11px 24px; border-radius: 20px;
+    background: var(--dark-gold); color: var(--white);
+    border: none; font-family: 'Montserrat', sans-serif;
+    font-size: 12px; cursor: pointer; letter-spacing: 0.04em; font-weight: 400;
+    transition: opacity 0.2s;
+  }
+  .btn-book:hover { opacity: 0.85; }
+  .btn-collection {
+    padding: 11px 24px; border-radius: 20px;
+    background: transparent; color: rgba(255,255,255,0.75);
+    border: var(--stroke) solid rgba(255,255,255,0.35);
+    font-family: 'Montserrat', sans-serif; font-size: 12px;
+    cursor: pointer; letter-spacing: 0.04em; font-weight: 400;
+    transition: all 0.2s;
+  }
+  .btn-collection:hover { border-color: rgba(255,255,255,0.6); color: var(--white); }
+  .done-badge {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--dark-gold); display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: var(--white); letter-spacing: 0.04em;
+  }
+  .send-label { font-size: 12px; color: rgba(255,255,255,0.55); letter-spacing: 0.04em; }
+  .email-field-wrap { width: 100%; max-width: 320px; position: relative; }
+  .email-input {
+    width: 100%; padding: 12px 52px 12px 16px;
+    border: var(--stroke) solid rgba(255,255,255,0.25);
+    border-radius: var(--radius); background: transparent;
+    font-family: 'Montserrat', sans-serif; font-size: 13px;
+    color: var(--white); outline: none;
+    transition: border-color 0.2s;
+  }
+  .email-input::placeholder { color: rgba(255,255,255,0.35); }
+  .email-input:focus { border-color: rgba(255,255,255,0.5); }
+  .send-btn {
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 12px; color: rgba(255,255,255,0.55); cursor: pointer;
+    background: none; border: none; font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.04em; transition: color 0.2s;
+  }
+  .send-btn:hover { color: var(--white); }
+  .project-sent-msg {
+    width: 100%; max-width: 320px; padding: 12px 16px;
+    border: var(--stroke) solid rgba(255,255,255,0.25);
+    border-radius: var(--radius);
+    font-size: 13px; color: rgba(255,255,255,0.8);
+    text-align: center; letter-spacing: 0.04em;
+    display: none;
+  }
+
+  /* GEMSTONE SVG colors */
+  .gem-garnet { fill: #C0472A; }
+  .gem-amethyst { fill: #7B4F9E; }
+  .gem-aquamarine { fill: #5BBFB5; }
+  .gem-diamond { fill: #ffffff; }
+  .gem-emerald-c { fill: #1A7A40; }
+  .gem-alexandrite { fill: #8BC5A0; }
+  .gem-ruby { fill: #B5192B; }
+  .gem-peridot { fill: #8DB850; }
+  .gem-sapphire { fill: #1E3F8F; }
+  .gem-tourmaline { fill: #D97DB5; }
+  .gem-citrine { fill: #D4A017; }
+  .gem-tanzanite { fill: #4A5BA8; }
+
+  /* PAGE VISIBILITY */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* SCROLLABLE CONTENT */
+  .scrollable-content {
+    padding-bottom: 200px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .hero { padding: 24px 20px 20px; }
+    .hero-title { font-size: 32px; }
+    .castle-icon { width: 44px; height: 44px; }
+    .hero-icon { right: 20px; }
+    .project-zone { padding: 20px 20px 16px; }
+    .main-content { padding: 0 20px 24px; }
+    .sticky-footer { padding: 16px 20px; }
+    .footer-inner { flex-wrap: wrap; }
+    .footer-divider { display: none; }
+    .footer-right { flex-direction: row; justify-content: space-between; width: 100%; margin-top: 12px; }
+    .image-grid img { height: 120px; }
+    .gem-footer { flex-direction: column; gap: 16px; }
+    .gem-color-grid { grid-template-columns: repeat(6, 1fr); }
+    .confirmator-inner { flex-direction: column; }
+    .confirmator-divider { display: none; }
+    .selection-cards { grid-template-columns: 1fr; }
+    .site-nav { padding: 12px 20px; }
+  }
+
+  /* TRANSITIONS */
+  .page-transition { animation: fadeIn 0.35s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loading-overlay">
+  <svg class="spinner" viewBox="0 0 56 56">
+    <circle cx="28" cy="28" r="22" fill="none" stroke="#e8e6e1" stroke-width="2"/>
+    <path d="M28 6 A22 22 0 0 1 50 28" fill="none" stroke="#907843" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<!-- SITE NAV -->
+<nav class="site-nav">
+  <div class="nav-left">
+    <div class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+    <span class="nav-logo">CHATEAU D'IVOIRE</span>
+  </div>
+  <div class="nav-right">
+    <span class="nav-badge">2</span>
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+  </div>
+</nav>
+
+<!-- ==================== PAGE: FIRST STEP ==================== -->
+<div class="page active page-transition" id="page-first">
+  <div class="hero">
+    <div class="hero-eyebrow">Custom Jewelry Creation</div>
+    <h1 class="hero-title">Exploration</h1>
+    <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
+    <div class="hero-icon">
+      <svg class="castle-icon" viewBox="0 0 81 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_93_329)">
+          <path d="M21.6696 89.5918H0V111H21.6696V89.5918Z" fill="white"/>
+          <path d="M21.6696 60.3784H0V81.7866H21.6696V60.3784Z" fill="white"/>
+          <path d="M21.6696 31.165H0V52.5545H21.6696V31.165Z" fill="white"/>
+          <path d="M51.3347 89.5918H29.665V111H51.3347V89.5918Z" fill="white"/>
+          <path d="M51.3347 60.3784H29.665V81.7866H51.3347V60.3784Z" fill="white"/>
+          <path d="M81.0002 89.5918H59.3306V111H81.0002V89.5918Z" fill="white"/>
+          <path d="M81.0002 60.3784H59.3306V81.7866H81.0002V60.3784Z" fill="white"/>
+          <path d="M81.0002 31.165H59.3306V52.5545H81.0002V31.165Z" fill="white"/>
+          <path d="M0.151855 23.2094L10.8822 0L21.6126 23.2094H0.151855Z" fill="white"/>
+          <path d="M59.5391 23.2094L70.2504 0L80.9998 23.2094H59.5391Z" fill="white"/>
+        </g>
+        <defs>
+          <clipPath id="clip0_93_329">
+            <rect width="81" height="111" fill="white"/>
+          </clipPath>
+        </defs>
+      </svg>
+    </div>
+  </div>
+  <div class="project-zone" id="first-project-zone" style="min-height:100px;">
+    <!-- populated dynamically -->
+  </div>
+  <div style="height: 220px;"></div>
+  <!-- FOOTER -->
+  <div class="sticky-footer" id="footer-first">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <div class="footer-label">Select the type of Jewelry</div>
+        <ul class="jewelry-types" id="jewelry-types">
+          <li class="jewelry-type-item" data-type="Bracelet"><div class="radio-circle"></div>Bracelet</li>
+          <li class="jewelry-type-item" data-type="Earrings"><div class="radio-circle"></div>Earrings</li>
+          <li class="jewelry-type-item" data-type="Ring"><div class="radio-circle"></div>Ring</li>
+          <li class="jewelry-type-item" data-type="Pendant"><div class="radio-circle"></div>Pendant</li>
+          <li class="jewelry-type-item" data-type="Necklace"><div class="radio-circle"></div>Necklace</li>
+          <li class="jewelry-type-item" data-type="Other"><div class="radio-circle"></div>Other</li>
+        </ul>
+        <input type="text" class="project-name-input" id="project-name-input" placeholder="Project's Name" maxlength="60">
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-right">
+        <div class="step-indicator" id="step-indicator-1">
+          <svg viewBox="0 0 72 72"><circle class="step-track" cx="36" cy="36" r="28"/><circle class="step-progress" cx="36" cy="36" r="28" stroke-dasharray="175.93" stroke-dashoffset="132"/></svg>
+          <div class="step-label">Steps:<br>1 / 4</div>
+        </div>
+        <div class="nav-arrows">
+          <button class="nav-arrow" disabled id="btn-prev-1">&#9664;</button>
+          <button class="nav-arrow" disabled id="btn-next-1">&#9654;</button>
+        </div>
+        <button class="btn-finish" id="btn-finish-1">Finish Exploration</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAGE: SECOND STEP ==================== -->
+<div class="page" id="page-second">
+  <div class="hero">
+    <div class="hero-eyebrow">Custom Jewelry Creation</div>
+    <h1 class="hero-title">Exploration</h1>
+    <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
+    <div class="hero-icon">
+      <svg class="castle-icon" viewBox="0 0 81 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_93_329)">
+          <path d="M21.6696 89.5918H0V111H21.6696V89.5918Z" fill="white"/>
+          <path d="M21.6696 60.3784H0V81.7866H21.6696V60.3784Z" fill="white"/>
+          <path d="M21.6696 31.165H0V52.5545H21.6696V31.165Z" fill="white"/>
+          <path d="M51.3347 89.5918H29.665V111H51.3347V89.5918Z" fill="white"/>
+          <path d="M51.3347 60.3784H29.665V81.7866H51.3347V60.3784Z" fill="white"/>
+          <path d="M81.0002 89.5918H59.3306V111H81.0002V89.5918Z" fill="white"/>
+          <path d="M81.0002 60.3784H59.3306V81.7866H81.0002V60.3784Z" fill="white"/>
+          <path d="M81.0002 31.165H59.3306V52.5545H81.0002V31.165Z" fill="white"/>
+          <path d="M0.151855 23.2094L10.8822 0L21.6126 23.2094H0.151855Z" fill="white"/>
+          <path d="M59.5391 23.2094L70.2504 0L80.9998 23.2094H59.5391Z" fill="white"/>
+        </g>
+        <defs>
+          <clipPath id="clip0_93_329">
+            <rect width="81" height="111" fill="white"/>
+          </clipPath>
+        </defs>
+      </svg>
+    </div>
+  </div>
+  <div class="project-zone" id="second-project-zone"></div>
+  <div class="main-content scrollable-content">
+    <div class="image-grid" id="image-grid-second"></div>
+  </div>
+  <input type="file" id="file-input" accept="image/*" multiple>
+  <!-- FOOTER -->
+  <div class="sticky-footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <div class="upload-zone" id="upload-zone">
+          <div class="upload-zone-text">Upload reference images for your project</div>
+          <button class="btn-upload" id="btn-upload-trigger">Upload from my device</button>
+        </div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-right">
+        <div class="step-indicator">
+          <svg viewBox="0 0 72 72"><circle class="step-track" cx="36" cy="36" r="28"/><circle class="step-progress" cx="36" cy="36" r="28" stroke-dasharray="175.93" stroke-dashoffset="88"/></svg>
+          <div class="step-label">Steps:<br>2 / 4</div>
+        </div>
+        <div class="nav-arrows">
+          <button class="nav-arrow" id="btn-prev-2">&#9664;</button>
+          <button class="nav-arrow" disabled id="btn-next-2">&#9654;</button>
+        </div>
+        <button class="btn-finish" id="btn-finish-2">Finish Exploration</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAGE: THIRD STEP ==================== -->
+<div class="page" id="page-third">
+  <div class="hero">
+    <div class="hero-eyebrow">Custom Jewelry Creation</div>
+    <h1 class="hero-title">Exploration</h1>
+    <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
+    <div class="hero-icon">
+      <svg class="castle-icon" viewBox="0 0 81 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_93_329)">
+          <path d="M21.6696 89.5918H0V111H21.6696V89.5918Z" fill="white"/>
+          <path d="M21.6696 60.3784H0V81.7866H21.6696V60.3784Z" fill="white"/>
+          <path d="M21.6696 31.165H0V52.5545H21.6696V31.165Z" fill="white"/>
+          <path d="M51.3347 89.5918H29.665V111H51.3347V89.5918Z" fill="white"/>
+          <path d="M51.3347 60.3784H29.665V81.7866H51.3347V60.3784Z" fill="white"/>
+          <path d="M81.0002 89.5918H59.3306V111H81.0002V89.5918Z" fill="white"/>
+          <path d="M81.0002 60.3784H59.3306V81.7866H81.0002V60.3784Z" fill="white"/>
+          <path d="M81.0002 31.165H59.3306V52.5545H81.0002V31.165Z" fill="white"/>
+          <path d="M0.151855 23.2094L10.8822 0L21.6126 23.2094H0.151855Z" fill="white"/>
+          <path d="M59.5391 23.2094L70.2504 0L80.9998 23.2094H59.5391Z" fill="white"/>
+        </g>
+        <defs>
+          <clipPath id="clip0_93_329">
+            <rect width="81" height="111" fill="white"/>
+          </clipPath>
+        </defs>
+      </svg>
+    </div>
+  </div>
+  <div class="project-zone" id="third-project-zone"></div>
+  <div class="main-content scrollable-content">
+    <div class="image-grid" id="image-grid-third"></div>
+    <div class="selection-cards">
+      <div class="selection-card">
+        <div class="selection-card-title">Gemstone Selection</div>
+        <div class="selected-items" id="gemstone-selected-display"></div>
+      </div>
+    </div>
+  </div>
+  <!-- FOOTER -->
+  <div class="sticky-footer" id="footer-third">
+    <div class="footer-inner">
+      <div class="footer-left" style="padding-right:0;">
+        <div class="gem-footer">
+          <div class="gem-section">
+            <div class="footer-label">Select the type of Gemstone</div>
+            <div class="gem-color-grid" id="gem-color-grid">
+              <!-- populated by JS -->
+            </div>
+          </div>
+          <div class="gem-section">
+            <div class="footer-label">Select the Gemstone Cut type</div>
+            <div class="gem-cut-grid" id="gem-cut-grid">
+              <!-- populated by JS -->
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:center; margin-top:14px;">
+          <button class="btn-add-to-project" id="btn-add-gem">Add to project</button>
+        </div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-right">
+        <div class="step-indicator">
+          <svg viewBox="0 0 72 72"><circle class="step-track" cx="36" cy="36" r="28"/><circle class="step-progress" cx="36" cy="36" r="28" stroke-dasharray="175.93" stroke-dashoffset="44"/></svg>
+          <div class="step-label">Steps:<br>3 / 4</div>
+        </div>
+        <div class="nav-arrows">
+          <button class="nav-arrow" id="btn-prev-3">&#9664;</button>
+          <button class="nav-arrow" disabled id="btn-next-3">&#9654;</button>
+        </div>
+        <button class="btn-finish" id="btn-finish-3">Finish Exploration</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAGE: FOURTH STEP ==================== -->
+<div class="page" id="page-fourth">
+  <div class="hero">
+    <div class="hero-eyebrow">Custom Jewelry Creation</div>
+    <h1 class="hero-title">Exploration</h1>
+    <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
+    <div class="hero-icon">
+      <svg class="castle-icon" viewBox="0 0 81 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_93_329)">
+          <path d="M21.6696 89.5918H0V111H21.6696V89.5918Z" fill="white"/>
+          <path d="M21.6696 60.3784H0V81.7866H21.6696V60.3784Z" fill="white"/>
+          <path d="M21.6696 31.165H0V52.5545H21.6696V31.165Z" fill="white"/>
+          <path d="M51.3347 89.5918H29.665V111H51.3347V89.5918Z" fill="white"/>
+          <path d="M51.3347 60.3784H29.665V81.7866H51.3347V60.3784Z" fill="white"/>
+          <path d="M81.0002 89.5918H59.3306V111H81.0002V89.5918Z" fill="white"/>
+          <path d="M81.0002 60.3784H59.3306V81.7866H81.0002V60.3784Z" fill="white"/>
+          <path d="M81.0002 31.165H59.3306V52.5545H81.0002V31.165Z" fill="white"/>
+          <path d="M0.151855 23.2094L10.8822 0L21.6126 23.2094H0.151855Z" fill="white"/>
+          <path d="M59.5391 23.2094L70.2504 0L80.9998 23.2094H59.5391Z" fill="white"/>
+        </g>
+        <defs>
+          <clipPath id="clip0_93_329">
+            <rect width="81" height="111" fill="white"/>
+          </clipPath>
+        </defs>
+      </svg>
+    </div>
+  </div>
+  <div class="project-zone" id="fourth-project-zone"></div>
+  <div class="main-content scrollable-content">
+    <div class="image-grid" id="image-grid-fourth"></div>
+    <div class="selection-cards">
+      <div class="selection-card">
+        <div class="selection-card-title">Gemstone Selection</div>
+        <div class="selected-items" id="gemstone-display-4"></div>
+      </div>
+      <div class="selection-card">
+        <div class="selection-card-title">Material Selection</div>
+        <div class="selected-items" id="material-selected-display"></div>
+      </div>
+    </div>
+  </div>
+  <!-- FOOTER -->
+  <div class="sticky-footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <div class="footer-label" style="text-align:center;">Select the Material</div>
+        <div class="material-grid" style="justify-content:center;">
+          <div class="material-item" data-material="White Gold">
+            <div class="material-sphere white-gold" id="mat-white"></div>
+            <div class="material-label">White Gold<br>18-karat</div>
+          </div>
+          <div class="material-item" data-material="Yellow Gold">
+            <div class="material-sphere yellow-gold" id="mat-yellow"></div>
+            <div class="material-label">Yellow Gold<br>18-karat</div>
+          </div>
+          <div class="material-item" data-material="Rose Gold">
+            <div class="material-sphere rose-gold" id="mat-rose"></div>
+            <div class="material-label">Rose Gold<br>18-karat</div>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:center; margin-top:14px;">
+          <button class="btn-add-to-project" id="btn-add-material">Add to project</button>
+        </div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-right">
+        <div class="step-indicator">
+          <svg viewBox="0 0 72 72"><circle class="step-track" cx="36" cy="36" r="28"/><circle class="step-progress" cx="36" cy="36" r="28" stroke-dasharray="175.93" stroke-dashoffset="0"/></svg>
+          <div class="step-label">Steps:<br>4 / 4</div>
+        </div>
+        <div class="nav-arrows">
+          <button class="nav-arrow" id="btn-prev-4">&#9664;</button>
+          <button class="nav-arrow" disabled id="btn-next-4">&#9654;</button>
+        </div>
+        <button class="btn-finish active" id="btn-finish-4">Finish Exploration</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAGE: FINAL STEP ==================== -->
+<div class="page" id="page-final">
+  <div class="hero">
+    <div class="hero-eyebrow">Custom Jewelry Creation</div>
+    <h1 class="hero-title">Exploration</h1>
+    <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
+    <div class="hero-icon">
+      <svg class="castle-icon" viewBox="0 0 81 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_93_329)">
+          <path d="M21.6696 89.5918H0V111H21.6696V89.5918Z" fill="white"/>
+          <path d="M21.6696 60.3784H0V81.7866H21.6696V60.3784Z" fill="white"/>
+          <path d="M21.6696 31.165H0V52.5545H21.6696V31.165Z" fill="white"/>
+          <path d="M51.3347 89.5918H29.665V111H51.3347V89.5918Z" fill="white"/>
+          <path d="M51.3347 60.3784H29.665V81.7866H51.3347V60.3784Z" fill="white"/>
+          <path d="M81.0002 89.5918H59.3306V111H81.0002V89.5918Z" fill="white"/>
+          <path d="M81.0002 60.3784H59.3306V81.7866H81.0002V60.3784Z" fill="white"/>
+          <path d="M81.0002 31.165H59.3306V52.5545H81.0002V31.165Z" fill="white"/>
+          <path d="M0.151855 23.2094L10.8822 0L21.6126 23.2094H0.151855Z" fill="white"/>
+          <path d="M59.5391 23.2094L70.2504 0L80.9998 23.2094H59.5391Z" fill="white"/>
+        </g>
+        <defs>
+          <clipPath id="clip0_93_329">
+            <rect width="81" height="111" fill="white"/>
+          </clipPath>
+        </defs>
+      </svg>
+    </div>
+  </div>
+  <div class="project-zone" id="final-project-zone"></div>
+  <div class="main-content" style="padding-bottom: 0;">
+    <div class="image-grid" id="image-grid-final"></div>
+    <div class="selection-cards" style="margin-bottom: 0; padding-bottom: 32px;">
+      <div class="selection-card">
+        <div class="selection-card-title">Gemstone Selection</div>
+        <div class="selected-items" id="gemstone-display-final"></div>
+      </div>
+      <div class="selection-card">
+        <div class="selection-card-title">Material Selection</div>
+        <div class="selected-items" id="material-display-final"></div>
+      </div>
+    </div>
+  </div>
+  <!-- CONFIRMATOR FOOTER -->
+  <div class="confirmator-footer">
+    <div class="confirmator-inner">
+      <div class="confirmator-left">
+        <div class="confirmator-title">Book your Consultation</div>
+        <div class="confirmator-body">Nous avons conçu un guide afin d'établir les bons choix lors de la sélection de la bague. Découvrez notre guide afin spécialement conçu pour vous aider à prendre les bonne décision lors du choix de la bague parfaite</div>
+        <div class="confirmator-actions">
+          <button class="btn-book">Book an Appointment</button>
+          <button class="btn-collection">Go to our collection</button>
+        </div>
+      </div>
+      <div class="confirmator-divider"></div>
+      <div class="confirmator-right">
+        <div class="done-badge">Done!</div>
+        <div class="send-label">Send this project to your email</div>
+        <div class="email-field-wrap" id="email-wrap">
+          <input type="email" class="email-input" id="email-input" placeholder="Your email">
+          <button class="send-btn" id="btn-send">send</button>
+        </div>
+        <div class="project-sent-msg" id="project-sent-msg">Project sent!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+const state = {
+  jewelryType: '',
+  projectName: '',
+  images: [], // array of data URLs
+  gemstones: [], // [{color, colorName, cut, cutName}]
+  materials: [], // [{name, type}]
+  selectedGemColor: null,
+  selectedGemCut: null,
+  selectedMaterial: null,
+};
+
+const gemColors = [
+  { name: 'Garnet',      color: '#C0472A', cls: 'garnet' },
+  { name: 'Amethyst',    color: '#7B4F9E', cls: 'amethyst' },
+  { name: 'Aquamarine',  color: '#5BBFB5', cls: 'aquamarine' },
+  { name: 'Diamond',     color: '#FFFFFF', cls: 'diamond', stroke: '#aaa' },
+  { name: 'Emerald',     color: '#1A7A40', cls: 'emerald-c' },
+  { name: 'Alexandrite', color: '#8BC5A0', cls: 'alexandrite' },
+  { name: 'Ruby',        color: '#B5192B', cls: 'ruby' },
+  { name: 'Peridot',     color: '#8DB850', cls: 'peridot' },
+  { name: 'Sapphire',    color: '#1E3F8F', cls: 'sapphire' },
+  { name: 'Tourmaline',  color: '#D97DB5', cls: 'tourmaline' },
+  { name: 'Citrine',     color: '#D4A017', cls: 'citrine' },
+  { name: 'Tanzanite',   color: '#4A5BA8', cls: 'tanzanite' },
+];
+
+const gemCuts = [
+  { name: 'Round',    svg: roundSVG() },
+  { name: 'Cushion',  svg: cushionSVG() },
+  { name: 'Princess', svg: princessSVG() },
+  { name: 'Radiant',  svg: radiantSVG() },
+  { name: 'Emerald',  svg: emeraldCutSVG() },
+  { name: 'Oval',     svg: ovalSVG() },
+  { name: 'Heart',    svg: heartSVG() },
+  { name: 'Pear',     svg: pearSVG() },
+];
+
+// ============================================================
+// GEM CUT SVGs (outline style)
+// ============================================================
+function roundSVG() {
+  return `<svg viewBox="0 0 95 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M90.5851 64.313V64.2982C90.5851 64.2982 90.5703 64.3032 90.5703 64.313H90.5851Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M90.581 64.2982C92.6779 58.9938 93.8354 53.2196 93.8354 47.1788L77.1133 47.5325L90.581 64.2982Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M67.9551 26.901L82.7206 16.9558C78.6237 12.1358 73.563 8.15385 67.834 5.32483L67.926 26.8961H67.9551V26.901Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M67.8185 5.32002C61.5907 2.23426 54.5832 0.5 47.1641 0.5V17.8035L67.8185 5.31517V5.32002Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M26.6072 5.81893L47.1744 17.8035V0.5C33.1691 0.5 20.6119 6.68124 12.0547 16.4569L26.6072 26.8961V5.82378V5.81893Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M91.3543 32.2974L77.1117 47.5325L93.8338 47.1788C93.8338 35.6496 89.6448 25.0989 82.7148 16.9557L67.9492 26.9009L91.3495 32.2974H91.3543Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M3.07633 31.8808C1.41041 36.6717 0.5 41.8163 0.5 47.1788L17.9969 46.8978L3.07633 31.8808Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M26.6064 67.4712L3.89869 63.9349L18.1849 47.0819L18.0008 46.8978L0.503906 47.1788C0.503906 59.3862 5.19655 70.4891 12.8578 78.8066L26.6016 67.4712H26.6064Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M26.6071 88.5338V67.4712L12.8633 78.8066C21.3914 88.059 33.6049 93.8576 47.1695 93.8576V76.2587L26.6022 88.5387L26.6071 88.5338Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M12.0508 16.4569C8.14273 20.9232 5.07241 26.1453 3.08203 31.8711L26.6034 26.8913L12.0508 16.452V16.4569Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M68.1003 67.4664C68.1003 68.0235 68.2359 87.3809 68.2407 88.529L47.1602 76.249V93.8479C61.1993 93.8479 73.776 87.6377 82.3332 77.8282L68.1342 67.4615H68.1003V67.4664Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M68.1377 67.4663L82.3367 77.833C85.7992 73.8608 88.6032 69.3023 90.5694 64.3127L68.1328 67.4663H68.1377Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M47.1688 17.8035L26.6016 5.81897V26.8816H38.1564L47.164 17.7987L47.1688 17.8035Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M26.6074 26.8864V38.5513L38.1623 26.8913H26.6074V26.8864Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M38.5449 67.5729L56.2887 67.51L68.0567 56.2181L67.9792 38.4641L56.3226 26.8912H38.1623L26.6074 38.5513V55.5592L38.5449 67.5777V67.5729Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M56.3235 26.8913L47.1755 17.8035L38.168 26.8913H56.3283H56.3235Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M67.9255 26.901H56.3223L67.9788 38.469L67.9304 26.901H67.9255Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M17.9961 46.8979L18.1801 47.0819L18.3351 46.8931H17.9961V46.8979Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M77.1125 47.5325L91.3551 32.2975C91.3551 32.2975 67.9403 26.8864 67.9258 26.901L67.9742 38.469L77.1125 47.5373V47.5325Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M68.0531 56.223L77.1139 47.5373L67.9805 38.469L68.058 56.223H68.0531Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M26.6013 38.5513C26.4027 38.7789 18.3395 46.8348 18.1797 47.077L26.6013 55.5592V38.5513Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M68.0566 56.2181L68.105 67.4663C68.105 67.4663 90.5512 64.3128 90.5754 64.3128V64.2982L77.1077 47.5325L68.0469 56.2181H68.0517H68.0566Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M47.1738 76.2538L68.2544 88.5338C68.2496 87.2937 68.1043 68.1203 68.114 67.4712L56.2879 67.5148L47.1738 76.2587V76.2538Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M18.3367 46.893L26.6034 38.5513V26.8864L3.08203 31.8663V31.8808L18.0026 46.8979H18.3416H18.3367V46.893Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M56.3218 26.8912H67.9251L67.8331 5.32001H67.8282L47.1738 17.8083L56.3315 26.8961H56.3267L56.3218 26.8912Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M56.2891 67.51L68.1054 67.4664L68.057 56.2181L56.2891 67.51Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M38.5449 67.573L26.6074 55.5544V67.4664L38.5449 67.573Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M18.1816 47.0819L3.89062 63.9349L26.608 67.4712V55.5593L18.1865 47.0819H18.1816Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M26.6074 67.4664V88.529L47.1746 76.249L38.5449 67.5681L26.6074 67.4615V67.4664Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M38.5391 67.5729L47.1689 76.2538L56.2829 67.51L38.5391 67.5729Z" stroke="#364B37" stroke-linejoin="bevel"/>
+</svg>`;
+}
+function cushionSVG() {
+  return `<svg viewBox="0 0 94 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M24.8496 17.2125V31.0428H47.1118L24.8496 17.2125Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.1265 92.6514V78.889H47.2227L69.1265 92.6514Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M24.8496 78.889V92.6514L47.0101 78.889H24.8496Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M47.1109 0.500088H34.1952L30.907 1.80812C28.8197 2.63164 26.8052 3.60041 24.8535 4.64676V17.2078L47.1157 0.495239L47.1109 0.500088Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.127 31.0428H80.5995L84.309 17.2125H69.127V31.0428Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.1266 4.92282C67.02 3.75537 64.8359 2.70905 62.5695 1.80803L59.2715 0.5H47.1113L69.1266 17.2125V4.92767V4.92282Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M84.2994 17.2125C83.1468 15.8901 81.9312 14.6113 80.6673 13.3954C77.2241 10.1062 73.3402 7.2626 69.127 4.92285V17.2077H84.2994V17.2125Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.127 54.7649L80.4057 31.038H69.127V54.7649Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.1266 31.0428V17.2125L47.1113 31.0428H69.1266Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M92.9778 31.0428V30.8442C90.7646 25.8644 87.8299 21.2817 84.3092 17.2174L80.6094 31.0379H92.9826V31.0476L92.9778 31.0428Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M13.2656 31.0428L24.8495 55.0362V31.0428H13.2656Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M13.2665 78.8261L13.252 78.8939H24.8504V55.0361L13.2665 78.8261Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M84.3092 92.6514C87.8298 88.5871 90.7694 84.0045 92.9729 79.0247V78.889H80.5996L84.2995 92.6514H84.3092Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.1266 92.6514L47.1113 109.364H59.2715L62.5695 108.056C64.831 107.155 67.02 106.109 69.1266 104.941V92.6562V92.6514Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M24.8486 92.6514V105.208C26.8002 106.264 28.8197 107.223 30.9021 108.046L34.1903 109.354H47.106L24.8438 92.6418V92.6514H24.8486Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M9.16797 92.6514C10.3157 93.9738 11.5264 95.2528 12.8 96.4687C16.3885 99.8838 20.4419 102.824 24.8489 105.217V92.6611H9.16797V92.6514Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M0.5 78.889V79.0247C2.71315 84.0045 5.64787 88.5871 9.16857 92.6514L13.2462 78.889H0.5Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M24.8489 92.6514V78.889H13.2456L9.16797 92.6514H24.8489Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M80.6 31.0428H80.4062L92.9732 54.9345V31.0428H80.6Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M13.2656 78.8261L0.5 54.9344V78.8939H13.2462L13.2656 78.8261Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.127 55.2977V78.889H92.9727V54.9296L80.4057 78.8212L69.127 55.2977Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.127 104.936C73.345 102.597 77.2289 99.7531 80.6673 96.4639C81.9409 95.248 83.1516 93.9739 84.2994 92.6466H69.127V104.932V104.936Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.127 78.889V92.6514H84.309L80.5995 78.889H69.127Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M24.8489 31.0428V17.2125H9.16797L13.265 31.0428H24.8489Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M24.8489 4.65161C20.4371 7.03981 16.3837 9.97543 12.8 13.4003C11.5264 14.6162 10.3205 15.8901 9.16797 17.2175H24.8489V4.65646V4.65161Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M0.5 31.0428V54.9345L13.2656 31.0428H0.5Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M9.16857 17.2126C5.64787 21.2769 2.71315 25.8596 0.5 30.8394V31.038H13.2656L9.16857 17.2175V17.2078V17.2126Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M47.1118 31.0428H24.8496V78.894H47.0101L47.1118 78.8262L47.2232 78.894H69.1319V55.3027L69.0011 55.0362L69.1319 54.7698V31.0428H47.1166H47.1118Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M24.8496 17.2125L47.1118 31.0428L69.127 17.2125" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.127 17.2125L47.1118 0.5L24.8496 17.2125" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.126 92.6514L47.2173 78.889H47.0043L24.8438 92.6514" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M24.8496 92.6514L47.1118 109.364L69.127 92.6514" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M47.1114 78.8213L47.0098 78.8891H47.2228L47.1114 78.8213Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M24.8495 55.0313L13.2656 31.038L0.5 54.9296L13.2656 78.8213L24.8495 55.0313Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.127 54.7649V55.2978L80.4057 78.8213L92.9727 54.9296L80.4057 31.038L69.127 54.7649Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.1259 55.2978V54.7649L69 55.0313L69.1259 55.2978Z" stroke="#364B37" stroke-linejoin="bevel"/>
+</svg>`;
+}
+function princessSVG() {
+  return `<svg viewBox="0 0 95 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M93.4235 1.15381L86.91 15.575L93.8206 32.6363V0.504761H59.3691L78.3528 7.04929L93.4186 1.15381H93.4235Z" stroke="#364B37" stroke-linejoin="round"/>
+<path d="M47.4697 8.88033L59.3345 0.509644H59.165L47.4648 8.88033H47.4697Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M78.4691 24.1252L86.9101 15.5751L76.2754 17.4353L78.4691 24.1252Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M9.21251 44.6549L9.16406 44.8051L15.9294 65.0877L9.21251 44.65V44.6549Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M85.1226 44.8051L85.0935 44.7083L76.023 72.0005L47.1602 80.4584L69.3545 73.9478L78.5316 82.8516L76.1248 72.3057L86.6965 73.9575L78.3088 65.1023L85.1178 44.81L85.1226 44.8051Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M76.2261 17.2657L78.3618 7.04932L69.4414 15.202L76.1874 17.1446L76.2261 17.2657Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M93.8206 32.6703L85.123 44.805L85.1812 44.8825L93.8206 32.6654V32.6703Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M16.0783 82.5269L24.3206 73.7927L18.1946 72.0101L15.9281 65.0974L7.47266 74.2094L18.1946 72.3154L16.0783 82.5317V82.5269Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M18.1812 17.1106L24.932 15.1681L15.7695 6.87L18.1425 17.2366L18.1812 17.1106Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M0.939767 1.11044L15.7683 6.87016L34.7859 0.509766H0.503906V32.8835L7.60824 15.7593L0.944615 1.10559L0.939767 1.11044Z" stroke="#364B37" stroke-linejoin="round"/>
+<path d="M93.8095 56.8526L88.6471 49.7268L93.7805 56.9059L86.6955 73.9575L93.3591 88.6113L78.5354 82.8515L59.5905 89.052L52.0891 83.8688L59.5469 89.0376L35.1733 89.0763L47.164 80.4633L24.3206 73.7928L47.1543 80.4536L34.7229 89.0423L15.778 82.8418L15.8167 82.7934L0.993031 88.6355L7.47266 74.1949L0.542657 56.9979L0.503906 57.0658V89.178H93.8241V44.8293L93.8144 56.8429L93.8095 56.8526Z" stroke="#364B37" stroke-linejoin="round"/>
+<path d="M7.60352 15.7593L15.6183 24.8711L18.0784 17.3917L7.60352 15.7593Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M85.0981 44.7083L78.4732 24.1252L76.2795 17.4353L76.1875 17.4499L76.231 17.2657L76.1875 17.1446L69.4463 15.2021L47.1696 9.09363L24.9413 15.1634L18.1905 17.1059L18.1517 17.2318L18.1905 17.4111L18.0888 17.3917L15.6286 24.8711L9.2168 44.6549L15.9386 65.0926L18.205 72.0053L24.3311 73.7879L47.1696 80.4584L76.0325 72.0005L85.1078 44.7083H85.0981Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M47.4653 8.88037L47.1602 9.09846" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M18.1898 72.3105L7.46791 74.2046L0.988281 88.6452L15.812 82.8031L16.0735 82.5269L18.185 72.3105H18.1898Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M78.5377 82.8515L93.3663 88.6112L86.7026 73.9575L76.1309 72.3057L78.5377 82.8515Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M76.274 17.4401L86.9087 15.5799L93.4222 1.15869L78.3564 7.05406L76.2207 17.2705L76.274 17.4401Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M76.1836 17.4546L76.2805 17.4401L76.2272 17.2705L76.1836 17.4546Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M18.1371 17.2317L15.7641 6.86518L0.935547 1.10547L7.5992 15.7592L18.0741 17.3916L18.1371 17.2317Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M18.1818 17.4111L18.143 17.2318L18.0801 17.3917L18.1818 17.4111Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M0.5 32.8834V56.9059L9.15887 44.8099L0.5 32.8834Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M0.5 56.9058V57.0753L0.53875 57.0076L0.5 56.901V56.9058Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M35.1738 89.0763L59.5475 89.0376L52.0896 83.8688L47.1645 80.4681L35.1738 89.0812V89.0763Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M93.8203 44.8389V32.6558V32.6703V44.8389Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M85.1855 44.8874L88.6481 49.7267L93.8105 56.8525L93.8251 44.8389V32.6703L85.1855 44.8874Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M59.1697 0.50961H59.1842L34.8105 0.504761H34.8251L59.1697 0.50961Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M46.8508 8.88033L47.1656 8.79317L47.4707 8.88033L59.1708 0.509644H34.8262L46.8508 8.88033Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M47.4695 8.88038L47.1644 8.79321L46.8496 8.88038L47.1644 9.09846L47.4695 8.88038Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M34.8123 0.5H34.7832L34.8219 0.504849H34.8123V0.5Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M24.932 15.1681L46.8504 8.88033L34.8258 0.509644H34.7871L15.7695 6.87003L24.932 15.1681Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M46.8452 8.88037L24.9316 15.1681L47.16 9.09846L46.8452 8.88037Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M59.3446 0.5H59.3301L59.3688 0.504849H59.3446V0.5Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.4414 15.2069L78.3618 7.05406L59.3781 0.509644H59.3394L47.4746 8.88033L69.4462 15.2069H69.4414Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M69.4369 15.2069L47.4653 8.88037L47.1602 9.09846L69.4369 15.2069Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M9.20732 44.6549L9.15887 44.5047L15.6191 24.8711L7.60436 15.7593L0.5 32.8835L9.15887 44.81L9.20732 44.6598V44.6549Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M15.6243 24.8711L9.16406 44.5047L9.21251 44.6549L15.6243 24.8711Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M15.9304 65.0926L9.16504 44.8099L0.544922 57.0125L7.47492 74.2094L15.9304 65.0974V65.0926Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M9.15887 44.8099L0.5 56.9059L0.53875 57.0125L9.15887 44.8099Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M93.8252 32.6606V32.6412L93.8203 32.6752V32.6606H93.8252Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M78.4727 24.1252L85.1654 44.5047L85.0976 44.7082L85.1266 44.8051L93.8291 32.6703V32.6364L86.9184 15.5751L78.4775 24.1252H78.4727Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M85.0937 44.7082L85.1615 44.5046L78.4688 24.1251L85.0937 44.7082Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M85.1863 44.8874L85.1234 44.8099L78.3145 65.1023L86.7021 73.9575L93.7871 56.9059L88.6538 49.7268L85.167 44.9213L85.1863 44.8874Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M85.1621 44.9214L88.6489 49.7268L85.1863 44.8875L85.167 44.9214H85.1621Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M47.1602 80.4584H47.165H47.1795L52.0901 83.8639L59.5915 89.0472L78.5364 82.8467L69.3594 73.943L47.165 80.4536L47.1602 80.4584Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M47.1699 80.4632L52.095 83.8639L47.1845 80.4584H47.1699V80.4632Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M16.0786 82.5268L16.0399 82.7207L15.822 82.8078L15.7832 82.8563L34.7281 89.0568L47.1595 80.468L24.3259 73.8073L16.0835 82.5365L16.0786 82.5268Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M16.0799 82.5269L15.8184 82.8031L16.0363 82.7159L16.0799 82.5221V82.5269Z" stroke="#364B37" stroke-linejoin="bevel"/>
+</svg>`;
+}
+function radiantSVG() {
+  return `<svg viewBox="0 0 95 94" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M18.6361 0.499966H75.6985L93.7426 15.207L93.8347 79.1796L75.7179 93.8333L18.6458 93.8527L0.601679 79.1506L0.5 15.1488L18.6313 0.495117L18.6361 0.499966Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M26.0398 11.9952L68.2349 11.9758L81.8091 22.6816L81.906 71.7147L68.1961 82.3768H26.0543L12.5333 71.6759L12.4316 22.6234L26.0398 11.9952Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M26.041 25.3022V69.0503L47.17 73.7734L68.2409 69.0358V25.3022L47.1313 19.8477L26.0459 25.3022H26.041Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M12.4316 22.6282L26.0398 44.3933L12.5333 71.6806L12.4316 22.6282Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M81.8106 22.6816L68.2363 44.4999L81.9075 71.7098L81.8057 22.6768L81.8106 22.6816Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M26.041 11.9952L47.1264 19.8477L68.2361 11.9758L26.041 11.9952Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M0.509766 15.1537L12.4375 22.6235L26.0457 11.9953L18.6411 0.5L0.509766 15.1537Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M68.2363 11.9758L81.8106 22.6816L93.7432 15.2118L75.699 0.504761L68.2363 11.9807V11.9758Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M26.0398 25.3023V11.9952L12.4316 22.6234L26.0398 25.3023Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M68.2363 11.9758V25.3023L81.8106 22.6816L68.2363 11.9758Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M68.2986 82.3476L47.2131 74.5049L26.1035 82.3767L68.2986 82.3476Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M93.8386 79.1843L81.9109 71.7146L68.3027 82.3476L75.7218 93.8332L93.8386 79.1795V79.1843Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M26.1095 82.3768L12.5352 71.6759L0.607422 79.1555L18.6516 93.8576L26.1095 82.3768Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M68.3027 69.0358V82.3476L81.9109 71.7146L68.3027 69.0358Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M26.1036 82.3767V69.0503L12.5293 71.6807L26.1036 82.3816V82.3767Z" stroke="#364B37" stroke-linejoin="bevel"/>
+</svg>`;
+}
+function emeraldCutSVG() {
+  return `<svg viewBox="0 0 88 119" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M19.3142 0.0096831L68.1777 0L86.8659 17.4779V100.198L68.1777 117.676H19.3142L0.5 100.081V17.6039L19.3142 0.0096831Z" stroke="#364B37" stroke-miterlimit="10"/>
+<path d="M23.847 8.87943H63.6739L78.4541 23.9982L78.4637 93.6918L63.3253 108.268H24.1328L9.27997 93.6918L8.77148 23.9982L23.8519 8.87943H23.847Z" stroke="#364B37" stroke-miterlimit="10"/>
+<path d="M28.0358 17.4682L59.3346 17.1776L71.1897 29.6175L71.1412 88.0096L59.4169 100.658H28.0212L16.0645 88.058L16.142 29.6805L28.0406 17.4634L28.0358 17.4682Z" stroke="#364B37" stroke-miterlimit="10"/>
+<path d="M31.5967 23.9934L55.8251 23.9837L65.0941 34.3358V83.3398L55.8251 93.6919H31.5967L22.2695 83.2768V34.4181L31.5967 24.0031V23.9934Z" stroke="#364B37" stroke-miterlimit="10"/>
+<path d="M22.2682 34.4132L0.5 17.6039" stroke="#364B37" stroke-miterlimit="10"/>
+<path d="M65.0938 34.3358L86.862 17.4779" stroke="#364B37" stroke-miterlimit="10"/>
+<path d="M55.8242 23.9885L68.1733 0.00485229" stroke="#364B37" stroke-miterlimit="10"/>
+<path d="M31.5957 23.9934L19.3145 0.00967407" stroke="#364B37" stroke-miterlimit="10"/>
+<path d="M22.2682 83.2719L0.5 100.081" stroke="#364B37" stroke-miterlimit="10"/>
+<path d="M31.5957 93.687L19.3145 117.671" stroke="#364B37" stroke-miterlimit="10"/>
+<path d="M55.8242 93.687L68.1733 117.671" stroke="#364B37" stroke-miterlimit="10"/>
+<path d="M65.0938 83.3398L86.862 100.198" stroke="#364B37" stroke-miterlimit="10"/>
+</svg>`;
+}
+function ovalSVG() {
+  return `<svg viewBox="0 0 80 119" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M21.4111 7.39169C17.6579 10.3612 14.2777 14.222 11.3672 18.7804H30.2733L21.4111 7.39169Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M48.8642 18.5915L48.9562 18.7707H68.0367C63.3102 11.3494 57.2955 5.79796 50.535 2.88174C52.8208 3.91841 55.1792 5.32808 57.5667 7.22217L48.8594 18.5915H48.8642Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M30.4574 35.2992V18.9984L30.283 18.7708H11.3769C11.3769 18.7708 11.3769 18.7805 11.3672 18.7853L15.1397 38.167L30.4525 35.2992H30.4574Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M3.91979 35.3719C2.06985 41.5676 0.907593 48.3301 0.597656 55.4463L15.1405 38.1766L3.91979 35.3719Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M48.957 35.367L63.8776 38.1718L68.0521 18.7902C68.0521 18.7902 68.0521 18.7804 68.0424 18.7756H48.9619V35.3719L48.957 35.367Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M49.3477 2.39249C49.6237 2.5039 49.8949 2.61048 50.1758 2.73159C49.8997 2.62017 49.6285 2.49421 49.3477 2.39249Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M75.4947 35.3719C73.6545 29.21 71.1217 23.615 68.0514 18.795L63.877 38.1767L75.4947 35.3719Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M78.811 55.4366C78.4962 48.3204 77.3388 41.5579 75.4889 35.3622L63.8711 38.167L78.8062 55.4366H78.811Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M11.3535 18.7853C8.28317 23.6053 5.75041 29.2003 3.91016 35.3621L15.1308 38.167L11.3535 18.7853Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M30.4525 100.134V80.5587L15.3576 66.2246L11.4785 100.134C11.4785 100.134 11.4785 100.144 11.4882 100.149H30.4331V100.134H30.4525Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M48.957 80.6604V99.703L49.3008 100.149H67.9213C67.9213 100.149 67.9213 100.139 67.931 100.134L64.1294 66.2101L48.957 80.6604Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M30.4419 100.153H11.4922C17.3616 109.27 25.1681 115.558 33.9287 117.501C30.0932 116.6 26.0011 114.715 21.7927 111.373L30.4468 100.153H30.4371H30.4419Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M57.9547 111.353C57.9547 111.353 57.8869 111.421 57.7513 111.533C61.548 108.578 64.9767 104.722 67.9115 100.153H49.291L57.9547 111.363V111.353Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M64.125 66.2101L67.9266 100.134C71.5005 94.5778 74.3432 87.9703 76.2416 80.6507L64.125 66.2053V66.2101Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M78.8179 55.6158L64.125 66.2101L76.2416 80.6555C77.9559 74.0529 78.9051 66.8786 78.9051 59.3653C78.9051 58.1058 78.8712 56.8559 78.8179 55.6158ZM78.8179 55.6158H78.8083" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M15.3474 66.2246L3.14844 80.6507C5.05165 87.9703 7.89435 94.573 11.4683 100.134L15.3474 66.2246Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M0.582319 55.6158C0.533891 56.8559 0.5 58.1058 0.5 59.3653C0.5 66.8786 1.44918 74.0432 3.16352 80.6555L15.3576 66.2295L0.582319 55.6207V55.6158Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M30.457 80.549V100.134L39.8665 87.9364L30.457 80.549Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M30.457 18.9984V35.2992L39.5808 30.7263L30.457 19.0033V18.9984Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M48.9576 35.3622V18.7659L48.8656 18.5867L39.582 30.7166L48.9625 35.3573L48.9576 35.3622Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M48.9522 99.703V80.6604L39.8574 87.9364L48.9522 99.703Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M30.4375 100.154H30.4523V100.139L30.4375 100.154Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M49.3006 100.153H48.9567L39.707 118.14C46.2157 118.14 52.3564 115.742 57.756 111.537C57.8916 111.426 57.9546 111.358 57.9546 111.358L49.2957 100.149H49.3054L49.3006 100.153Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M49.3008 100.153L48.957 99.7078V100.153H49.3008Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M30.4567 100.153H30.447L21.793 111.373C26.0062 114.715 30.1032 116.6 33.9289 117.501C35.8128 117.922 37.7499 118.14 39.7064 118.14L30.4567 100.153Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M30.457 100.134V100.149L39.7067 118.135L48.9564 100.149V99.7029L39.8665 87.9364L30.457 100.134Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M50.1758 2.7316C50.3017 2.78004 50.4179 2.83333 50.5341 2.88177C50.4082 2.82364 50.292 2.78004 50.1758 2.7316Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M49.3538 2.39248C33.7117 -3.85655 21.3965 7.37234 21.3965 7.37234V7.3917C26.8737 3.06098 33.0966 0.604963 39.707 0.604963C43.034 0.604963 46.2641 1.22988 49.3538 2.40217V2.39248Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M48.8588 18.5915L57.5661 7.22215C55.1786 5.33775 52.8251 3.92323 50.5344 2.88173C50.4182 2.83329 50.2875 2.78 50.1712 2.73156C49.8952 2.6153 49.624 2.50388 49.348 2.39246C46.2631 1.22016 43.033 0.595276 39.7012 0.595276L48.8588 18.5915Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M30.4565 18.7707L39.711 0.595276C33.1007 0.595276 26.8777 3.06098 21.4199 7.38202L30.287 18.7707H30.4614H30.4565Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M30.2773 18.7708L30.4565 18.9984V18.7708H30.2773Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M48.8644 18.5915L39.7067 0.595276L30.457 18.7707V18.9984L39.5808 30.7214L48.8644 18.5915Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M78.9045 55.5528L78.8125 55.4414C78.8125 55.4995 78.8125 55.5577 78.8222 55.6206L78.9094 55.5625V55.5528H78.9045Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M0.495082 55.5577L0.582248 55.6158C0.582248 55.5577 0.582258 55.4995 0.591943 55.4366L0.490234 55.5528H0.499929L0.495082 55.5577Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M15.1309 38.167L24.366 55.5577L30.4534 35.2992L15.1309 38.167Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M55.1787 55.5528L64.1184 66.2053L78.8114 55.611C78.8114 55.5529 78.8114 55.4947 78.8017 55.4317L63.8666 38.1621L55.1738 55.5528H55.1835H55.1787Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M24.36 55.5528L15.1249 38.1621L0.591726 55.4317C0.591726 55.4899 0.591717 55.548 0.582031 55.611L15.3476 66.2149L24.3649 55.5432L24.3552 55.5528H24.36Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M48.957 80.6603L64.1197 66.2101L55.18 55.5576L48.957 80.6603Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M63.8776 38.167L48.957 35.3622L55.18 55.5528L63.8727 38.1621L63.8776 38.167Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M15.3477 66.2246L30.4523 80.549L24.3649 55.5528L15.3477 66.2246Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M48.9559 35.367L39.5803 30.7263L30.4565 35.2992L24.3691 55.5577L30.4565 80.5538L39.866 87.9412L48.9559 80.6652L55.1788 55.5625L48.9559 35.3719V35.367Z" stroke="#364B37" stroke-linejoin="bevel"/>
+</svg>`;
+}
+function heartSVG() {
+  return `<svg viewBox="0 0 102 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M49.3829 8.97892C44.9033 7.45784 35.1451 3.5631 26.8737 1.23304C19.4885 -0.849974 11.5464 1.58665 6.67453 7.52081C2.60661 12.4764 1.07627 16.9041 0.630737 22.5767C-0.139263 32.4491 2.52426 42.2635 7.76897 50.6585C18.8977 68.4755 37.0968 89.6883 50.5452 99.3767C63.979 89.6544 82.2314 68.5288 93.3649 50.6924C98.6145 42.2925 101.259 32.4637 100.484 22.5767C100.043 16.9089 98.5273 12.491 94.4642 7.52566C89.6118 1.59635 81.689 -0.825762 74.3231 1.22334C66.0275 3.51949 56.2402 7.39007 51.6929 8.96928C50.9423 9.23087 50.1384 9.23082 49.3877 8.97407L49.3829 8.97892Z" stroke="#364B37" stroke-miterlimit="10"/>
+<path d="M50.5796 16.1484L39.3008 22.7753L50.5554 28.443L61.8439 22.7753L50.5747 16.1484H50.5796Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M39.3053 22.7753L28.8691 19.6362L39.2617 5.37488L50.5793 16.1484L39.3053 22.7753Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M61.8473 22.7753L72.0994 19.6362L61.8473 5.37488L50.5781 16.1484" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M50.5796 66.9883L39.3008 72.3218L50.5408 99.3767L61.8487 72.3218L50.5796 66.9883Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M23.4395 72.3218H39.3043V59.6736" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M77.6826 72.3218H61.8516V59.6736" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M28.8639 78.7259V51.0267L18.0113 37.9182L11.5801 56.5007H34.3944L50.5741 66.9883L66.7489 56.5007H89.5632L83.1029 37.9182L72.0953 51.0218V78.8809" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M34.3995 56.5006L28.8642 51.0315V19.6362H0.984375L18.0164 37.9134C18.0164 37.9134 22.0698 23.4292 39.3052 22.7704" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M100.134 19.6362H72.1042V51.017L66.7578 56.5006" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M66.7534 56.5006L72.2838 51.0315V19.6362H100.164L83.1364 37.9134C83.1364 37.9134 79.0782 23.4292 61.8477 22.7704" stroke="#364B37" stroke-linejoin="bevel"/>
+</svg>`;
+}
+function pearSVG() {
+  return `<svg viewBox="0 0 83 119" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M18.1819 7.16943C32.2065 -1.39998 50.2119 -1.39998 64.2414 7.16943C82.242 18.1706 85.6077 37.8429 78.3775 62.1802C69.2004 93.0524 41.2189 118.019 41.2189 118.019C41.2189 118.019 13.2277 93.0572 4.06035 62.1802C-3.17958 37.8429 0.186132 18.1706 18.1867 7.16943H18.1819Z" stroke="#364B37" stroke-miterlimit="10"/>
+<path d="M41.1937 21.2806L28.1134 25.2334L21.3965 45.9182L28.1134 72.7939L41.2083 86.256L54.5113 72.7939L60.8553 45.9182L54.5113 25.2334L41.1937 21.2806Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M14.5691 59.482L0.486328 42.4933L14.5691 28.7939L21.3974 45.9182L14.5691 59.482Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M67.4862 59.482L81.8886 42.4933L67.4862 28.7939L60.8613 45.9182L67.4862 59.482Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M41.2089 118.024L32.3418 92.2483L41.2089 86.256L50.6329 92.2483L41.2089 118.024Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M41.2002 0.348694L29.5098 12.4883L41.2002 21.2806L53.0117 12.4883L41.2002 0.348694Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M70.6917 12.0427L67.4858 28.794L54.5169 25.2334L53.0156 12.4932L70.6917 12.0475V12.0427Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M11.7598 12.0087L14.5686 28.7939L28.1138 25.2334L29.5085 12.4931L11.7598 12.0136V12.0087Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M12.1045 81.0872L14.5694 59.4821L28.1146 72.7939L32.3376 92.2483L12.0996 81.0872H12.1045Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M70.2702 81.0872L67.4808 59.4821L54.5119 72.7939L50.6328 92.2483L70.2702 81.0872Z" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M23.3438 98.1437L32.3416 92.2483" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M58.8462 98.4973L50.6328 92.2483" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M78.369 62.1803L67.4824 59.4821" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M4.01172 62.1609L14.5641 59.482" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M2.98438 25.2092L14.5683 28.794" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M79.3607 25.0446L67.4766 28.794" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M55.9929 3.26007L53.0098 12.4883" stroke="#364B37" stroke-linejoin="bevel"/>
+<path d="M25.916 3.43933L29.5093 12.4883" stroke="#364B37" stroke-linejoin="bevel"/>
+</svg>`;
+}
+
+// Gem SVG for display (filled with color)
+function gemFilledSVG(colorHex, cutName, size = 48) {
+  const cutPath = getFilledCutPath(cutName);
+  return `<svg viewBox="0 0 48 48" width="${size}" height="${size}" fill="none" xmlns="http://www.w3.org/2000/svg">
+    ${cutPath(colorHex)}
+  </svg>`;
+}
+
+function getFilledCutPath(cutName) {
+  const cuts = {
+    'Round': (c) => `<svg viewBox="0 0 98 99" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M15.2555 47.713L0 47.9624C0.0986906 43.3901 0.825912 38.8853 2.17122 34.5416L15.2555 47.713Z" fill="${c}"/>
+                      <path d="M15.8061 49.7861L2.73218 65.202C1.03885 60.3647 0.109079 55.2573 0 50.0407L15.8061 49.7861Z" fill="${c}"/>
+                      <path d="M24.418 26.722L3.33984 31.1852C5.29288 26.1868 8.03022 21.5833 11.5 17.4579L24.418 26.722Z" fill="${c}"/>
+                      <path d="M24.4969 71.4473L12.306 81.5064C8.77913 77.5213 5.95864 73.0425 3.91211 68.2416L8.67005 68.9845L24.4969 71.4473Z" fill="${c}"/>
+                      <path d="M25.9042 39.3321L23.707 41.5508C23.5771 41.6807 23.4525 41.8053 23.3278 41.9352C20.2165 45.0579 18.6738 46.6167 17.8947 47.4168L3.78711 33.2167L3.83384 33.2063L25.9042 28.5302V39.3321Z" fill="${c}"/>
+                      <path d="M19.3594 48.8872L25.1718 43.0263C25.4367 42.7562 25.6911 42.5067 25.9041 42.2885V55.4806L25.3899 54.9558L19.3594 48.8872Z" fill="${c}"/>
+                      <path d="M25.9086 5.78296V25.2256L12.8867 15.8887C16.6681 11.7685 21.078 8.37046 25.9086 5.78296Z" fill="${c}"/>
+                      <path d="M24.1124 56.6237L25.9095 58.4318V69.5663L4.58203 66.2463L17.9728 50.4459L24.1124 56.6237Z" fill="${c}"/>
+                      <path d="M13.7227 83.0287L25.9083 72.9852V92.2304C21.4257 89.8352 17.3067 86.7437 13.7227 83.0287Z" fill="${c}"/>
+                      <path d="M36.8477 28.2963L27.9863 37.2382V28.2859L36.8477 28.2963Z" fill="${c}"/>
+                      <path d="M37.2321 69.8313L27.9863 69.7482V60.5205L37.2321 69.8313Z" fill="${c}"/>
+                      <path d="M38.9098 26.2128L27.9863 26.2076V6.46362L47.3193 17.7281L38.9098 26.2128Z" fill="${c}"/>
+                      <path d="M47.3245 79.9891L27.9863 91.5393V71.8265L39.3098 71.9252L47.3245 79.9891Z" fill="${c}"/>
+                      <path d="M47.9587 15.6912L28.6309 4.43202C34.6458 1.67825 41.2165 0.140286 47.9587 0V15.6912Z" fill="${c}"/>
+                      <path d="M28.625 93.5814L47.9579 82.0363V98.0289C41.2314 97.8834 34.6555 96.3404 28.625 93.5814Z" fill="${c}"/>
+                      <path d="M56.1868 71.8734L49.0239 78.7422L42.2402 71.9201L56.1868 71.8734Z" fill="${c}"/>
+                      <path d="M41.834 26.2179L49.0073 18.9802L56.2999 26.2179H41.834Z" fill="${c}"/>
+                      <path d="M68.9481 4.22938L50.041 15.6601V0C56.6325 0.13509 62.9747 1.55355 68.9481 4.22938Z" fill="${c}"/>
+                      <path d="M50.041 82.0155L69.6752 93.4514C63.5772 96.2935 56.9026 97.8833 50.041 98.0288V82.0155Z" fill="${c}"/>
+                      <path d="M50.6855 17.7125L70.1379 5.94922L70.2211 26.218H59.2456L58.3834 25.3555L50.6855 17.7125Z" fill="${c}"/>
+                      <path d="M61.3438 28.2963L70.2311 28.3015L70.2674 37.1603L61.3438 28.2963Z" fill="${c}"/>
+                      <path d="M29.1447 58.7384L27.9863 57.5746V40.1895L39.7721 28.2963H58.3882L70.283 40.1011L70.361 58.2707L58.3623 69.7847L40.1825 69.8521L29.1447 58.7384Z" fill="${c}"/>
+                      <path d="M61.375 69.7742L70.3715 61.1388L70.413 69.743L61.375 69.7742Z" fill="${c}"/>
+                      <path d="M70.538 88.8168L70.5536 91.5498L50.7168 79.9944L59.199 71.863L70.4238 71.8214C70.4394 74.783 70.4965 83.3353 70.538 88.8168Z" fill="${c}"/>
+                      <path d="M79.6268 49.3809L72.4276 56.2809L72.3652 42.1794L75.3467 45.1359L79.6268 49.3809Z" fill="${c}"/>
+                      <path d="M72.5117 72.8085L85.1856 82.057C81.5341 86.0577 77.2904 89.3831 72.6468 91.9446C72.6364 91.0925 72.6312 89.9234 72.6208 88.5673C72.5844 83.6885 72.5325 76.3416 72.5117 72.8085Z" fill="${c}"/>
+                      <path d="M85.5744 16.3927L72.298 25.3294L72.2148 5.83484C77.2533 8.54184 81.7359 12.0854 85.5744 16.3927Z" fill="${c}"/>
+                      <path d="M93.6099 66.6152C91.153 66.9581 85.512 67.753 72.4901 69.5819L72.4434 59.1541L81.0139 50.9343L93.6099 66.6152Z" fill="${c}"/>
+                      <path d="M74.1777 71.4525L93.895 68.6779C92.0303 72.9384 89.5683 76.9028 86.5608 80.4879L74.1777 71.4525Z" fill="${c}"/>
+                      <path d="M75.6336 42.4859L72.356 39.2386L72.3145 28.5664L94.4004 33.6635L81.0875 47.9051L75.6336 42.4859Z" fill="${c}"/>
+                      <path d="M73.8613 26.7895L86.9301 17.9878C90.2959 22.1029 92.9501 26.7116 94.8149 31.6216L84.068 29.1379C80.9255 28.4157 77.7882 27.6935 75.43 27.148L73.8613 26.7895Z" fill="${c}"/>
+                      <path d="M83.248 50.3887L97.9997 50.0769C97.8906 55.2935 96.9609 60.4062 95.2312 65.3058L83.248 50.3887Z" fill="${c}"/>
+                      <path d="M83.5586 48.3053L95.9676 35.03C97.2195 39.2178 97.9103 43.5771 97.9986 47.9987L83.5586 48.3053Z" fill="${c}"/>
+                    </svg>`,
+    'Cushion': (c) => `<svg viewBox="0 0 98 116" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M11.0194 33.0575L0 53.687V33.0575H11.0194Z" fill="${c}"/>
+                          <path d="M11.0561 82.759H0V62.0614L11.0561 82.759Z" fill="${c}"/>
+                          <path d="M11.3449 84.8566L9.42623 91.3223L7.88496 96.5347C4.96498 92.9322 2.49589 89.015 0.519531 84.8566H11.3449Z" fill="${c}"/>
+                          <path d="M11.3661 30.9599H0.488281C2.46988 26.7753 4.94948 22.8371 7.87994 19.2136L11.3661 30.9599Z" fill="${c}"/>
+                          <path d="M18.9986 47.326L24.1413 57.9764L12.7235 81.427L0.136719 57.8715L12.7183 34.3265L18.9986 47.326Z" fill="${c}"/>
+                          <path d="M24.2552 82.759H14.4102L24.2552 62.5333V82.759Z" fill="${c}"/>
+                          <path d="M12.9843 13.6709C16.3551 10.4564 20.14 7.61937 24.2605 5.2334V15.9939H10.6934C11.4483 15.1811 12.2189 14.405 12.9843 13.6709Z" fill="${c}"/>
+                          <path d="M9.73438 18.0914H24.2608V30.9599H13.5508L9.73438 18.0914Z" fill="${c}"/>
+                          <path d="M14.4375 33.0575H24.2616V53.3985L19.9 44.3686L14.4375 33.0575Z" fill="${c}"/>
+                          <path d="M13.5298 84.8566H24.2608V97.6568H9.73438L12.1353 89.5656L13.5298 84.8566Z" fill="${c}"/>
+                          <path d="M10.6934 99.7596H24.2605V110.51C20.1558 108.134 16.3708 105.297 12.9843 102.078C12.2031 101.328 11.4378 100.551 10.6934 99.7596Z" fill="${c}"/>
+                          <path d="M45.6197 84.8566L26.3594 96.8179V84.8566H45.6197Z" fill="${c}"/>
+                          <path d="M45.7298 30.9599H26.3594V18.9252L38.0498 26.188L45.7298 30.9599Z" fill="${c}"/>
+                          <path d="M26.3594 100.803L46.254 115.738H35.6226L32.2465 114.395C30.3016 113.624 28.3252 112.707 26.3594 111.669V100.803Z" fill="${c}"/>
+                          <path d="M46.2645 0L26.3594 14.9398V4.06926C28.3986 2.99426 30.3278 2.10283 32.2517 1.34246L35.6226 0H46.2645Z" fill="${c}"/>
+                          <path d="M71.3961 98.7844L49.4098 115.476L27.1719 98.7844L49.4098 84.9719L71.3961 98.7844Z" fill="${c}"/>
+                          <path d="M27.166 16.9588L49.404 0.262207L71.3955 16.9588L49.404 30.7712L27.166 16.9588Z" fill="${c}"/>
+                          <path d="M65.7551 1.34246C67.9044 2.19722 70.0695 3.20929 72.1874 4.3577V14.9242L52.5234 0H62.3685L65.7551 1.34246Z" fill="${c}"/>
+                          <path d="M53.0469 30.9599L72.1866 18.9409V30.9599H53.0469Z" fill="${c}"/>
+                          <path d="M26.3594 33.0575H72.1878V57.4573L72.172 57.494L72.1563 57.5255L72.1511 57.5359V58.4275L72.1878 58.5061V82.759H26.3594V33.0575Z" fill="${c}"/>
+                          <path d="M53.1621 84.8566H72.1865V96.8074L54.6247 85.7742L53.1621 84.8566Z" fill="${c}"/>
+                          <path d="M52.5234 115.743L72.1874 100.819V111.385C70.0643 112.534 67.9044 113.551 65.7551 114.401L62.3685 115.743H52.5234Z" fill="${c}"/>
+                          <path d="M83.7881 33.0575L74.2891 53.042V33.0575H83.7881Z" fill="${c}"/>
+                          <path d="M74.2891 82.759V62.8848L83.8143 82.759H74.2891Z" fill="${c}"/>
+                          <path d="M87.3005 15.9939H74.2891V5.55334C78.1946 7.87638 81.796 10.5979 85.0043 13.6656C85.7854 14.4207 86.5508 15.1968 87.3005 15.9939Z" fill="${c}"/>
+                          <path d="M74.2891 99.7544H87.3057C86.5613 100.546 85.7907 101.322 85.0043 102.078C81.796 105.145 78.1946 107.872 74.2891 110.19V99.7544Z" fill="${c}"/>
+                          <path d="M84.8517 84.8566L88.2907 97.6568H74.2832V84.8566H84.8517Z" fill="${c}"/>
+                          <path d="M84.8524 30.9599H74.2891V18.0914H88.3018L84.8524 30.9599Z" fill="${c}"/>
+                          <path d="M87.0273 84.8566H97.4806C95.5252 88.9835 93.0718 92.8849 90.1571 96.4875L87.0273 84.8566Z" fill="${c}"/>
+                          <path d="M87.0332 30.9494L90.1629 19.2607C93.0776 22.8685 95.5415 26.791 97.5126 30.9494H87.0332Z" fill="${c}"/>
+                          <path d="M85.4913 81.4008L74.2832 58.0289V57.9291L84.6106 36.209L85.4913 34.3579L97.8632 57.8715L85.4913 81.4008Z" fill="${c}"/>
+                          <path d="M98.0005 33.0575V53.6292L87.1855 33.0575H98.0005Z" fill="${c}"/>
+                          <path d="M87.1484 82.759L98 62.1191V82.759H87.1484Z" fill="${c}"/>
+                        </svg>`,
+    'Princess': (c) => `<svg viewBox="0 0 98 94" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5.31258 77.967L0 89.8006V64.7986L5.12043 77.4892L5.31258 77.967Z" fill="${c}"/>
+                            <path d="M5.4476 15.3347L0 28.4617V3.36621L5.4476 15.3347Z" fill="${c}"/>
+                            <path d="M6.96916 46.4717L0 56.2014V36.8719L6.96916 46.4717Z" fill="${c}"/>
+                            <path d="M6.90082 17.2516L14.0051 25.3294L7.82521 44.1081L3.18257 37.7186L0.144531 33.5369L6.90082 17.2516Z" fill="${c}"/>
+                            <path d="M0.181641 59.6869L7.91424 48.7417L14.2447 67.7127L14.3278 67.9621L6.7925 76.0814L0.181641 59.6869Z" fill="${c}"/>
+                            <path d="M14.7593 23.0384L9.25977 16.7839L16.4471 17.9061L14.7593 23.0384Z" fill="${c}"/>
+                            <path d="M7.29661 14.3738L1.43359 1.49609L14.4424 6.54532L16.5664 15.8179L7.29661 14.3738Z" fill="${c}"/>
+                            <path d="M14.7217 86.3566L1.48438 91.5719L7.16045 78.9177L16.6068 77.2502L14.7217 86.3566Z" fill="${c}"/>
+                            <path d="M16.679 75.1256L9.30469 76.4242L15.0639 70.2218L16.679 75.1256Z" fill="${c}"/>
+                            <path d="M18.789 76.9645L22.58 78.0709L17.4336 83.5305L18.789 76.9645Z" fill="${c}"/>
+                            <path d="M23.0788 14.1971L18.6232 15.4801L17.0859 8.76343L23.0788 14.1971Z" fill="${c}"/>
+                            <path d="M15.3613 4.67522L3.31836 0H29.3413L15.3613 4.67522Z" fill="${c}"/>
+                            <path d="M15.3351 88.3459L29.6007 93.016H3.48438L15.3351 88.3459Z" fill="${c}"/>
+                            <path d="M17.3457 6.20239L35.5892 0.0986328L46.2768 7.54254L25.4315 13.5216L17.3457 6.20239Z" fill="${c}"/>
+                            <path d="M46.6094 85.0786L35.4961 92.7615L17.2266 86.7772L24.8241 78.7255L46.6094 85.0786Z" fill="${c}"/>
+                            <path d="M48.9139 6.84657L39.0781 0H58.6407L49.0697 6.84657H48.9139Z" fill="${c}"/>
+                            <path d="M58.5727 92.585L58.9674 92.8603L39.3789 92.8914L49.0173 85.9722L58.5727 92.585Z" fill="${c}"/>
+                            <path d="M51.6973 7.53751L62.2342 0.103882L80.4621 6.38938L72.6153 13.5633L51.6973 7.53751Z" fill="${c}"/>
+                            <path d="M80.6858 86.8084L62.4994 92.7615L60.5883 91.442L53.0843 86.2473L51.3965 85.0733L51.7808 84.9642L72.517 78.8865L80.6858 86.8084Z" fill="${c}"/>
+                            <path d="M79.3978 15.5113L74.9629 14.2335L80.774 8.91931L79.3978 15.5113Z" fill="${c}"/>
+                            <path d="M74.8066 78.2112L79.2156 76.923L80.8515 84.0709L74.8066 78.2112Z" fill="${c}"/>
+                            <path d="M88.5489 76.2217L81.2266 75.0787L82.8468 70.2062L88.5489 76.2217Z" fill="${c}"/>
+                            <path d="M81.4182 67.8998L79.1333 74.7776L72.5224 76.7204L72.5068 76.7152L48.9975 83.6137L24.8077 76.5541H24.7974V76.5489L19.7237 75.0685L18.7526 74.788L18.5656 74.2165L16.4936 67.8946L9.39453 46.3002L16.1664 25.4072L18.7318 17.61L25.4466 15.6776H25.4518L48.9975 9.24646L72.6107 15.7242L79.3046 17.6464L79.3514 17.8021L81.5844 24.6124H81.5896L88.5848 46.347L81.9739 66.2426L81.4182 67.8946V67.8998Z" fill="${c}"/>
+                            <path d="M83.0328 22.3424L81.584 17.932L88.5999 16.7009L83.0328 22.3424Z" fill="${c}"/>
+                            <path d="M88.5232 90.6525L94.6043 93.016H68.3945L82.6134 88.3616L88.5232 90.6525Z" fill="${c}"/>
+                            <path d="M82.4314 4.86736L68.3008 0H94.8741L82.4314 4.86736Z" fill="${c}"/>
+                            <path d="M91.4927 80.4345L96.5404 91.5409L88.7923 88.5331L83.5368 86.4916L81.418 77.2139L90.6826 78.6632L91.4927 80.4345Z" fill="${c}"/>
+                            <path d="M96.6086 1.55322L90.9014 14.1918L86.8508 14.8984L81.4551 15.8438L83.3558 6.73751L96.6086 1.55322Z" fill="${c}"/>
+                            <path d="M91.0511 75.8425L83.5938 67.9672L83.9832 66.788L90.0385 48.7521L92.6402 52.3417L97.8126 59.5727L91.0511 75.8425Z" fill="${c}"/>
+                            <path d="M91.2535 16.9711L97.8644 33.2927L90.1578 44.0509L83.7598 24.5656L91.2535 16.9711Z" fill="${c}"/>
+                            <path d="M97.9901 56.1805L94.3393 51.1469L94.3289 51.1313L94.3238 51.1209L91.0469 46.5444L97.9953 36.7264V45.121L97.9901 54.378V56.1805Z" fill="${c}"/>
+                            <path d="M98.0009 3.5271V28.0772L92.7559 15.1373L98.0009 3.5271Z" fill="${c}"/>
+                            <path d="M92.5312 77.7022L97.9996 64.5493V89.7228L93.0922 78.9334L92.5312 77.7022Z" fill="${c}"/>
+                          </svg>`,
+    'Radiant': (c) => `<svg viewBox="0 0 98 99" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M10.7083 23.262L0 16.5557L0.103837 81.432L10.8121 74.7153L10.7083 23.262Z" fill="${c}"/>
+                          <path d="M24.9526 11.0544L18.1548 0.498779L10.8117 6.4312L0.742188 14.5712L11.6842 21.4178L24.9526 11.0544Z" fill="${c}"/>
+                          <path d="M11.7824 76.5594L0.845703 83.4164L18.1752 97.5355L25.0041 87.0215L11.7824 76.5594Z" fill="${c}"/>
+                          <path d="M12.8533 55.2663L12.8845 70.866L25.1506 46.0873L12.791 26.3215L12.8533 55.2663Z" fill="${c}"/>
+                          <path d="M25.3015 13.4232L14.1777 22.1087L25.3015 24.2957V13.4232Z" fill="${c}"/>
+                          <path d="M25.3006 42.4044V26.4152L13.8965 24.171L25.3006 42.4044Z" fill="${c}"/>
+                          <path d="M25.3008 50.4664L13.7148 73.8685L25.3008 71.6245V50.4664Z" fill="${c}"/>
+                          <path d="M25.3686 73.7283L14.2812 75.8789L25.3686 84.6163V73.7283Z" fill="${c}"/>
+                          <path d="M27.3789 24.2178L45.4926 19.5322L27.3789 12.7843V24.2178Z" fill="${c}"/>
+                          <path d="M27.4453 73.7803V85.2657L46.7015 78.0867L27.4453 73.7803Z" fill="${c}"/>
+                          <path d="M32.0996 12.3271L48.9514 18.6023L65.8239 12.3115L49.024 12.3167L32.0996 12.3271Z" fill="${c}"/>
+                          <path d="M49.0483 79.4268L32.1758 85.7176L65.8948 85.6968L49.0483 79.4268Z" fill="${c}"/>
+                          <path d="M70.5492 12.7635L52.4043 19.527L70.5492 24.2179V12.7635Z" fill="${c}"/>
+                          <path d="M27.3789 71.6348L48.9927 76.4711L70.5495 71.6245V26.3631L48.9512 20.7841L27.3789 26.3631V71.6348Z" fill="${c}"/>
+                          <path d="M70.6265 73.7386L51.3496 78.0659L70.6265 85.2346V73.7386Z" fill="${c}"/>
+                          <path d="M71.026 10.2284L77.6785 0.00012207H20.3047L26.9051 10.2492L71.026 10.2284Z" fill="${c}"/>
+                          <path d="M26.9734 87.8007L20.3262 98.0342L77.7104 98.0134L71.1151 87.8007H26.9734Z" fill="${c}"/>
+                          <path d="M72.627 24.3009L83.7195 22.1606L72.627 13.4128V24.3009Z" fill="${c}"/>
+                          <path d="M83.8112 75.905L72.7031 73.7179V84.5437L83.8112 75.905Z" fill="${c}"/>
+                          <path d="M72.627 42.5134L84.0051 24.2178L72.627 26.4151V42.5134Z" fill="${c}"/>
+                          <path d="M72.627 50.5236V71.588L84.3738 73.8996L72.627 50.5236Z" fill="${c}"/>
+                          <path d="M85.1091 26.3787L72.7754 46.2015L85.1974 70.9179L85.1091 26.3787Z" fill="${c}"/>
+                          <path d="M86.2107 21.4803L97.1578 14.6284L79.8335 0.498901L72.9785 11.0389L86.2107 21.4803Z" fill="${c}"/>
+                          <path d="M81.465 80.3878L73.0469 86.9643L79.8603 97.5147L97.2573 83.4424L86.3154 76.5957L81.465 80.3878Z" fill="${c}"/>
+                          <path d="M87.2926 74.7517L98.0009 81.4581L97.9022 16.6128L87.1836 23.3243L87.2926 74.7517Z" fill="${c}"/>
+                        </svg>`,
+    'Emerald': (c) => `<svg viewBox="0 0 98 135" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.35814 27.2766L0 21.5918V112.75L7.93714 106.621L7.35814 27.2766Z" fill="${c}"/>
+                        <path d="M10.1737 104.895L15.8174 100.537L15.9017 33.8722L9.61719 29.0197L10.1737 104.895Z" fill="${c}"/>
+                        <path d="M18.0664 98.7996L23.0187 94.976V39.3658L18.1507 35.6097L18.0664 98.7996Z" fill="${c}"/>
+                        <path d="M24.6081 8.95726L20.3921 0.725357L0.605469 19.2246L8.37964 25.2242L24.6081 8.95726Z" fill="${c}"/>
+                        <path d="M8.72252 108.859L0.605469 115.123L20.3922 133.622L24.9284 124.76L8.72252 108.859Z" fill="${c}"/>
+                        <path d="M29.4611 115.916L16.8246 102.601L10.5176 107.47L26.004 122.669L29.4611 115.916Z" fill="${c}"/>
+                        <path d="M10.1797 26.6131L16.9251 31.8255L29.6347 18.7748L25.6886 11.0658L10.1797 26.6131Z" fill="${c}"/>
+                        <path d="M33.62 107.796L24.002 97.0565L18.6113 101.217L30.5451 113.796L33.62 107.796Z" fill="${c}"/>
+                        <path d="M18.7188 33.2087L24.0026 37.2853L33.6206 26.5456L30.72 20.8834L18.7188 33.2087Z" fill="${c}"/>
+                        <path d="M35.6614 25.6009L62.4126 25.5897L65.3132 19.9556L32.9238 20.2536L35.6614 25.6009Z" fill="${c}"/>
+                        <path d="M62.4135 108.746H35.6622L32.666 114.594H65.4208L62.4135 108.746Z" fill="${c}"/>
+                        <path d="M66.5787 116.843H31.5136L28.1465 123.417H69.9682L66.5787 116.843Z" fill="${c}"/>
+                        <path d="M31.7759 18.0157L66.4756 17.6952L70.2812 10.3011H27.8242L31.7759 18.0157Z" fill="${c}"/>
+                        <path d="M35.4701 27.8501L25.2676 39.2477V95.0997L35.4701 106.497H62.5924L72.7274 95.1785V39.1577L62.5924 27.8389L35.4701 27.8501Z" fill="${c}"/>
+                        <path d="M26.9915 125.666L22.5508 134.336H75.5868L71.1236 125.666H26.9915Z" fill="${c}"/>
+                        <path d="M71.4384 8.05196L75.5868 0L22.5508 0.0112482L26.6711 8.05196H71.4384Z" fill="${c}"/>
+                        <path d="M79.2086 101.172L73.9921 97.1352L64.4473 107.796L67.5277 113.773L79.2086 101.172Z" fill="${c}"/>
+                        <path d="M79.2535 33.1244L67.4433 20.7316L64.4473 26.5456L73.9921 37.2009L79.2535 33.1244Z" fill="${c}"/>
+                        <path d="M79.8032 35.5422L74.9746 39.2814V95.0547L79.747 98.749L79.8032 35.5422Z" fill="${c}"/>
+                        <path d="M87.6565 107.717L80.9897 102.556L68.623 115.904L72.1139 122.68L87.6565 107.717Z" fill="${c}"/>
+                        <path d="M87.6734 26.6074L72.4399 11.0208L68.5332 18.6117L81.0404 31.7411L87.6734 26.6074Z" fill="${c}"/>
+                        <path d="M88.2412 29.0084L82.0523 33.8047L81.9961 100.492L88.2469 105.333L88.2412 29.0084Z" fill="${c}"/>
+                        <path d="M89.4615 25.2186L97.3874 19.0784L77.7469 0.714096L73.5254 8.91787L89.4615 25.2186Z" fill="${c}"/>
+                        <path d="M73.1875 124.766L77.752 133.622L97.3924 115.258L89.4497 109.106L73.1875 124.766Z" fill="${c}"/>
+                        <path d="M90.4902 27.2709L90.4959 107.076L98.0002 112.885V21.4513L90.4902 27.2709Z" fill="${c}"/>
+                      </svg>`,
+    'Oval': (c) => `<svg viewBox="0 0 98 148" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3.99627 44.7317C2.12214 51.3055 0.899618 58.1959 0.353516 65.2788L15.2659 47.55L3.99627 44.7317Z" fill="${c}"/>
+                      <path d="M12.0631 25.3703C9.09676 30.5102 6.6269 36.2025 4.70312 42.3418L15.9168 45.1414L12.0631 25.3703Z" fill="${c}"/>
+                      <path d="M0.0310589 71.5421C0.0124417 72.3988 0 73.2057 0 73.9817C0 82.3991 0.943268 90.6676 2.79257 98.5884L15.9797 82.9951L0.0310589 71.5421Z" fill="${c}"/>
+                      <path d="M3.53125 101.587C5.57293 109.247 8.41516 116.261 12.0021 122.488L16.0854 86.7258L3.53125 101.587Z" fill="${c}"/>
+                      <path d="M0.583984 68.8791L17.5876 81.0893L27.8518 68.9473L17.2836 49.0397L0.583984 68.8791Z" fill="${c}"/>
+                      <path d="M25.357 9.14377C21.5964 12.291 18.1273 16.1769 15.0059 20.7208H34.3676L25.357 9.14377Z" fill="${c}"/>
+                      <path d="M15.166 127.491C18.3309 132.047 21.8744 135.939 25.6785 139.068L34.6085 127.491H15.166Z" fill="${c}"/>
+                      <path d="M34.9379 97.3345L28.7135 71.7718L19.498 82.6785L27.913 90.6676L34.9379 97.3345Z" fill="${c}"/>
+                      <path d="M35.3657 44.7441L19.3984 47.7362L29.0235 65.856L35.3657 44.7441Z" fill="${c}"/>
+                      <path d="M35.8996 101.674L26.0883 92.3561L18.747 85.3974L14.2168 125.008H35.8996V101.674Z" fill="${c}"/>
+                      <path d="M35.9072 42.1121V23.2163H14.1934L18.5064 45.371L35.9072 42.1121Z" fill="${c}"/>
+                      <path d="M44.222 33.3656L38.3887 25.8731V41.1313L43.6138 38.5117L46.9277 36.8481L44.222 33.3656Z" fill="${c}"/>
+                      <path d="M27.7891 140.403C28.2297 140.738 28.6765 141.048 29.1233 141.365C32.8467 143.972 36.6943 145.834 40.6039 146.933C41.0321 147.051 41.454 147.169 41.8822 147.274C43.5453 147.647 45.2333 147.883 46.9337 147.994L36.9363 128.546L27.7891 140.403Z" fill="${c}"/>
+                      <path d="M46.935 0C46.6371 0.0186227 46.333 0.0310545 46.0352 0.0558847C46.0289 0.0558847 46.0227 0.0620983 46.0165 0.0620983C45.6318 0.0931361 45.2408 0.142772 44.8498 0.192433C44.7133 0.211055 44.583 0.223481 44.4465 0.242104C44.3472 0.254519 44.2479 0.273146 44.1486 0.285561C38.3028 1.17945 32.5749 3.65007 27.3125 7.59187L36.8383 19.8332L46.935 0Z" fill="${c}"/>
+                      <path d="M47.4738 110.817L38.3887 103.691V122.587L47.4738 110.817Z" fill="${c}"/>
+                      <path d="M38.5254 21.9996L48.8269 35.2465L59.271 21.6023L49.0006 1.41534L39.5183 20.038L38.5254 21.9996Z" fill="${c}"/>
+                      <path d="M49.2048 112.636L38.6055 126.373L49 146.585L59.5622 126.044L49.2048 112.636Z" fill="${c}"/>
+                      <path d="M59.6049 103.859L50.9355 110.805L59.6049 122.034V103.859Z" fill="${c}"/>
+                      <path d="M59.6125 25.2462L50.7383 36.8357L58.1913 40.5292L59.6125 41.2306V25.2462Z" fill="${c}"/>
+                      <path d="M67.5444 69.1398L59.8244 44.1048L48.8403 38.6669L46.7677 39.7036L38.1789 44.0116L30.6328 69.1336L38.2472 100.42L49.194 109.011L59.75 100.562L67.5444 69.1398Z" fill="${c}"/>
+                      <path d="M70.149 7.39322C67.6108 5.49371 64.9982 3.9294 62.367 2.73755L62.3174 2.7127C62.3174 2.7127 62.2987 2.70652 62.2925 2.70652L61.9575 2.56372C61.9016 2.5451 61.852 2.52028 61.7961 2.49545C61.5541 2.39613 61.312 2.29682 61.0638 2.1975C61.0204 2.17888 60.9769 2.16024 60.9273 2.14161H60.9211C57.7065 0.924934 54.3989 0.211057 51.0664 0L60.9459 19.411L70.149 7.39322Z" fill="${c}"/>
+                      <path d="M51.0664 147.994C57.9113 147.572 64.4894 145.021 70.6517 140.409L61.2376 128.223L51.0664 147.994Z" fill="${c}"/>
+                      <path d="M78.1173 47.7361L62.6465 44.831L69.1004 65.7629L78.1173 47.7361Z" fill="${c}"/>
+                      <path d="M69.4487 71.7718L63.0879 97.4338L78.5897 82.6599L69.4487 71.7718Z" fill="${c}"/>
+                      <path d="M72.5936 138.857C76.317 135.753 79.7488 131.942 82.8206 127.491H63.8125L72.5936 138.857Z" fill="${c}"/>
+                      <path d="M83.0007 20.7209C79.7738 16.0031 76.1373 11.993 72.2091 8.78995L63.0742 20.7209H83.0007Z" fill="${c}"/>
+                      <path d="M62.84 101.103L62.1016 101.804V125.008H83.7781L79.3348 85.385L62.84 101.103Z" fill="${c}"/>
+                      <path d="M62.1016 42.199L79.0183 45.3773L83.7905 23.2039H62.1016V42.199Z" fill="${c}"/>
+                      <path d="M93.2847 42.3356C91.3485 36.1715 88.8662 30.4605 85.8812 25.302L81.6055 45.1476L93.2847 42.3356Z" fill="${c}"/>
+                      <path d="M85.9992 122.469C89.5737 116.255 92.4097 109.247 94.4576 101.568L81.9902 86.7134L85.9992 122.469Z" fill="${c}"/>
+                      <path d="M97.4051 68.8791L80.2462 49.0459L70.3047 68.9288L80.4945 81.0707L97.4051 68.8791Z" fill="${c}"/>
+                      <path d="M97.6607 65.3657C97.1084 58.2456 95.8859 51.318 94.0056 44.7255L82.252 47.5562L97.6607 65.3657Z" fill="${c}"/>
+                      <path d="M97.9692 71.5421L82.1074 82.9826L95.2077 98.5947C97.0632 90.68 98.0002 82.4115 98.0002 73.9817C98.0002 73.2057 97.9878 72.405 97.9692 71.5421Z" fill="${c}"/>
+                    </svg>`,
+    'Heart': (c) => `<svg viewBox="0 0 98 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0.2077 20.2934C0.178697 20.5738 0.149737 20.8543 0.130402 21.1444C-0.609165 30.6069 1.80769 40.0984 7.11034 48.5842C7.97558 49.9719 8.88432 51.3693 9.81724 52.7763L15.4099 36.6122L0.2077 20.2934Z" fill="${c}"/>
+                      <path d="M16.1594 34.5814C17.2808 31.9704 20.2052 26.6275 26.3828 23.2622V19.1039H1.74023L16.1594 34.5814Z" fill="${c}"/>
+                      <path d="M17.5957 36.1722L26.3835 46.7807V25.4429C20.4477 29.0258 18.1709 34.5185 17.5957 36.1722Z" fill="${c}"/>
+                      <path d="M11.457 53.9609H26.3837V49.8123L16.8661 38.319L11.457 53.9609Z" fill="${c}"/>
+                      <path d="M22.3997 69.7527H26.3828V55.895H11.9395C15.1732 60.5562 18.7212 65.2463 22.3997 69.7527Z" fill="${c}"/>
+                      <path d="M26.382 74.5106V71.6868H23.9941C24.7869 72.6393 25.5796 73.5774 26.382 74.5106Z" fill="${c}"/>
+                      <path d="M28.3164 53.9609H30.5158L28.3164 51.7851V53.9609Z" fill="${c}"/>
+                      <path d="M28.3164 22.3242C29.7375 21.7149 31.3182 21.2169 33.0535 20.8591L28.3164 19.4376V22.3242Z" fill="${c}"/>
+                      <path d="M25.097 0.691402C23.4342 0.227222 21.7472 0 20.0796 0C14.6754 0 9.45977 2.37403 5.94079 6.65319C3.11786 10.091 1.50338 13.2629 0.681641 17.1698H26.8614L36.2244 4.31781C32.6135 3.03164 28.6933 1.7068 25.097 0.691402Z" fill="${c}"/>
+                      <path d="M28.3164 69.7527H36.7997V58.6317L32.5846 55.895H28.3164V69.7527Z" fill="${c}"/>
+                      <path d="M28.3164 71.6868V76.7251C34.6631 83.9199 41.0921 90.2733 46.7089 94.7749L37.1187 71.6868H28.3164Z" fill="${c}"/>
+                      <path d="M38.7324 59.8841V69.1919L47.0368 65.2657L38.7324 59.8841Z" fill="${c}"/>
+                      <path d="M37.6344 20.216L47.4228 14.4669L37.8567 5.35742L28.9336 17.605L37.6344 20.216Z" fill="${c}"/>
+                      <path d="M56.4387 6.2229C55.9456 6.4018 55.467 6.58069 55.003 6.74992C53.2 7.41235 51.6484 7.98776 50.4448 8.40358C49.4925 8.73721 48.4774 8.73716 47.5155 8.41321C46.1814 7.9587 44.388 7.29626 42.3095 6.5323C42.0871 6.4501 41.86 6.36795 41.6328 6.28092L49.0188 13.3113L56.4387 6.2229Z" fill="${c}"/>
+                      <path d="M39.7871 21.2024L49.0003 25.8393L58.2473 21.1976L49.0196 15.7725L39.7871 21.2024Z" fill="${c}"/>
+                      <path d="M49.0185 66.4696L39.0078 71.2032L48.9847 95.2101L59.0196 71.1985L49.0185 66.4696Z" fill="${c}"/>
+                      <path d="M59.3063 59.8792L51.002 65.2656L59.3063 69.1967V59.8792Z" fill="${c}"/>
+                      <path d="M68.9284 17.6049L60.1309 5.36707L50.6133 14.4669L60.392 20.2208L68.9284 17.6049Z" fill="${c}"/>
+                      <path d="M69.5333 53.961V51.9689L67.5176 53.961H69.5333Z" fill="${c}"/>
+                      <path d="M61.2383 58.6269V69.7527H69.533V55.895H65.4485L61.2383 58.6269Z" fill="${c}"/>
+                      <path d="M51.2715 94.7604C56.869 90.2685 63.2447 83.9827 69.5335 76.8895V71.6868H60.9101L51.2715 94.7604Z" fill="${c}"/>
+                      <path d="M69.5393 22.2516V19.4424L64.9375 20.8494C66.6148 21.1927 68.1471 21.6665 69.5393 22.2516Z" fill="${c}"/>
+                      <path d="M49.4303 27.788H48.5651L37.5634 22.2468C33.8752 22.4209 30.8203 23.2381 28.3164 24.4082V49.0678L33.4837 54.1786L49.0194 64.2455L64.5552 54.1737L69.5388 49.0629V24.3308C67.0639 23.1994 64.0718 22.4161 60.4707 22.2468L49.4303 27.788Z" fill="${c}"/>
+                      <path d="M71.4668 74.6798C72.3224 73.6982 73.1683 72.6973 74.0094 71.6868H71.4668V74.6798Z" fill="${c}"/>
+                      <path d="M71.6562 25.4429V46.5824L80.4296 36.1384C79.8398 34.4509 77.5534 29.0016 71.6562 25.4429Z" fill="${c}"/>
+                      <path d="M71.4668 69.7527H75.6093C79.3023 65.2366 82.86 60.5465 86.0938 55.895H71.4668V69.7527Z" fill="${c}"/>
+                      <path d="M71.5538 49.706L71.4668 49.9139V53.961H86.5772L81.1343 38.3046L71.5538 49.706Z" fill="${c}"/>
+                      <path d="M96.294 19.1039H71.6562V23.2622C77.829 26.6275 80.7534 31.9704 81.8748 34.5814L96.294 19.1039Z" fill="${c}"/>
+                      <path d="M92.0742 6.65805C87.5063 1.07822 80.0091 -1.26684 72.976 0.686581C69.3361 1.69714 65.4014 3.01231 61.752 4.30331L70.999 17.1698H97.3188C96.5019 13.2678 94.8874 10.0959 92.0742 6.65805Z" fill="${c}"/>
+                      <path d="M97.8685 21.1444C97.8444 20.8688 97.8202 20.598 97.7912 20.332L82.6035 36.6363L88.2155 52.7811C89.1436 51.3837 90.0475 49.996 90.9031 48.618C96.2009 40.1467 98.6081 30.6456 97.8685 21.1444Z" fill="${c}"/>
+                    </svg>`,
+    'Pear': (c) => `<svg viewBox="0 0 98 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2.6187 30.3712C0.870936 35.4967 -0.00593482 41.1711 3.02285e-05 47.4004L13.9165 33.8617L2.6187 30.3712Z" fill="${c}"/>
+                      <path d="M0.310547 53.8327C0.841436 59.7697 2.08814 66.1483 4.05065 72.9624L14.0599 70.4205L0.310547 53.8327Z" fill="${c}"/>
+                      <path d="M11.9295 15.108C8.25508 18.9029 5.42766 23.2409 3.44727 28.1277L14.6914 31.6003L11.9295 15.108Z" fill="${c}"/>
+                      <path d="M4.73047 75.2536C6.71683 81.656 9.37134 87.8556 12.4016 93.7269L14.8054 72.6938L4.73047 75.2536Z" fill="${c}"/>
+                      <path d="M0.458984 50.2765L15.9442 68.9527L23.2932 54.3518L15.7414 35.4131L0.458984 50.2765Z" fill="${c}"/>
+                      <path d="M24.218 57.8245L17.6445 70.874L30.6841 83.6907L24.218 57.8245Z" fill="${c}"/>
+                      <path d="M31.0612 30.6397L17.7949 34.1243L24.4818 50.8912L31.0612 30.6397Z" fill="${c}"/>
+                      <path d="M29.4844 3.62183C26.645 4.73166 23.8892 6.09214 21.2526 7.69722C19.308 8.89058 17.4946 10.1674 15.8125 11.5338L32.8069 11.9933L29.4844 3.62183Z" fill="${c}"/>
+                      <path d="M31.7753 27.9844L33.2606 14.392L14.1426 13.8729L17.149 31.827L31.7753 27.9844Z" fill="${c}"/>
+                      <path d="M16.3379 100.851C19.8155 106.747 23.5675 112.224 27.2658 117.135L35.766 111.562L16.3379 100.851Z" fill="${c}"/>
+                      <path d="M31.7762 88.1121L17.0903 73.6783L14.4238 97.0683L36.3514 109.163L31.7762 88.1121Z" fill="${c}"/>
+                      <path d="M45.5913 0.0835571C40.8908 0.381898 36.2202 1.2948 31.7285 2.81634L35.0093 11.0745L45.5913 0.0835571Z" fill="${c}"/>
+                      <path d="M28.7168 119.038C35.7377 128.126 42.3767 135.095 46.2659 138.955L37.4496 113.316L28.7168 119.038Z" fill="${c}"/>
+                      <path d="M34.252 27.2624L46.3848 23.5988L35.5463 15.4481L34.252 27.2624Z" fill="${c}"/>
+                      <path d="M47.1483 103.906L34.9199 91.3283L38.8628 109.503L47.1483 103.906Z" fill="${c}"/>
+                      <path d="M49.0222 105.523L39.502 111.95L49.0341 139.654L59.1568 111.968L49.0222 105.523Z" fill="${c}"/>
+                      <path d="M48.991 22.5725L61.7264 13.0912L48.991 0L36.3809 13.0912L48.991 22.5725Z" fill="${c}"/>
+                      <path d="M63.4392 91.1732L50.8887 103.882L59.7766 109.533L63.4392 91.1732Z" fill="${c}"/>
+                      <path d="M51.6094 23.5988L63.9928 27.2744L62.597 15.4183L51.6094 23.5988Z" fill="${c}"/>
+                      <path d="M65.7104 2.6314C61.3917 1.21727 56.9119 0.369965 52.4023 0.0835571L63.0142 10.985L65.7104 2.6314Z" fill="${c}"/>
+                      <path d="M51.877 138.818C55.7363 134.982 62.1846 128.191 69.0205 119.378L61.1705 113.4L51.877 138.818Z" fill="${c}"/>
+                      <path d="M71.9558 54.4533L64.4279 29.8938L48.9844 25.3113L33.8093 29.8938L25.834 54.4533L33.9465 86.9069L49.0023 102.391L64.2967 86.9128L71.9558 54.4533Z" fill="${c}"/>
+                      <path d="M79.7704 34.1183L67.1543 30.6516L73.3281 50.7836L79.7704 34.1183Z" fill="${c}"/>
+                      <path d="M73.5918 57.92L67.5312 83.6012L79.9207 70.88L73.5918 57.92Z" fill="${c}"/>
+                      <path d="M70.4724 117.481C74.2483 112.493 78.0897 106.914 81.6389 100.893L62.7715 111.621L70.4724 117.481Z" fill="${c}"/>
+                      <path d="M82.2216 11.5697C80.5275 10.1914 78.7022 8.90255 76.7397 7.69725C73.9362 5.98477 70.9953 4.56464 67.9651 3.41901L65.1914 11.9993L82.2216 11.5697Z" fill="${c}"/>
+                      <path d="M66.4865 88.0883L62.2871 109.145L83.5107 97.0862L80.4924 73.7142L66.4865 88.0883Z" fill="${c}"/>
+                      <path d="M66.4796 27.9904L80.4318 31.8211L83.8617 13.9146L64.875 14.392L66.4796 27.9904Z" fill="${c}"/>
+                      <path d="M85.5036 93.9179C88.5696 88.0048 91.2539 81.7515 93.2641 75.2954L82.7656 72.6938L85.5036 93.9179Z" fill="${c}"/>
+                      <path d="M94.4685 27.9248C92.494 23.1215 89.6905 18.8433 86.0637 15.1021L82.9082 31.5765L94.4685 27.9248Z" fill="${c}"/>
+                      <path d="M97.4634 50.2765L81.8349 35.4072L74.5039 54.3518L81.6321 68.9527L97.4634 50.2765Z" fill="${c}"/>
+                      <path d="M93.9445 73.0041C95.9308 66.1184 97.1835 59.6742 97.7085 53.6776L83.5176 70.4205L93.9445 73.0041Z" fill="${c}"/>
+                      <path d="M98.0004 47.4959C98.0123 41.1472 97.1176 35.3654 95.3101 30.1624L83.6484 33.8438L98.0004 47.4959Z" fill="${c}"/>
+                    </svg>`,
+  };
+  return cuts[cutName] || cuts['Round'];
+}
+
+// Material sphere SVG
+function materialSphereSVG(type, size = 48) {
+  const gradients = {
+    'White Gold': `<defs><radialGradient id="wg" cx="35%" cy="35%"><stop offset="0%" stop-color="#f5f5f5"/><stop offset="60%" stop-color="#c0c0c0"/><stop offset="100%" stop-color="#808080"/></radialGradient></defs><circle cx="${size/2}" cy="${size/2}" r="${size/2-2}" fill="url(#wg)"/>`,
+    'Yellow Gold': `<defs><radialGradient id="yg" cx="35%" cy="35%"><stop offset="0%" stop-color="#f5e070"/><stop offset="55%" stop-color="#c9a227"/><stop offset="100%" stop-color="#8a6a0a"/></radialGradient></defs><circle cx="${size/2}" cy="${size/2}" r="${size/2-2}" fill="url(#yg)"/>`,
+    'Rose Gold': `<defs><radialGradient id="rg" cx="35%" cy="35%"><stop offset="0%" stop-color="#f5c5a3"/><stop offset="55%" stop-color="#d4836a"/><stop offset="100%" stop-color="#9a4a2a"/></radialGradient></defs><circle cx="${size/2}" cy="${size/2}" r="${size/2-2}" fill="url(#rg)"/>`,
+  };
+  return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">${gradients[type]||gradients['White Gold']}</svg>`;
+}
+
+// ============================================================
+// INIT GEM GRIDS
+// ============================================================
+function initGemGrids() {
+  const colorGrid = document.getElementById('gem-color-grid');
+  colorGrid.innerHTML = '';
+  gemColors.forEach((g, i) => {
+    const item = document.createElement('div');
+    item.className = 'gem-color-item';
+    item.dataset.index = i;
+    item.innerHTML = `<div class="gem-dot" style="background:${g.color};${g.stroke?'border-color:'+g.stroke:''}"></div><div class="gem-color-label">${g.name}</div>`;
+    item.addEventListener('click', () => selectGemColor(i));
+    colorGrid.appendChild(item);
+  });
+
+  const cutGrid = document.getElementById('gem-cut-grid');
+  cutGrid.innerHTML = '';
+  gemCuts.forEach((c, i) => {
+    const item = document.createElement('div');
+    item.className = 'gem-cut-item';
+    item.dataset.index = i;
+    item.innerHTML = `<div class="gem-cut-icon">${c.svg}</div><div class="gem-cut-label">${c.name}</div>`;
+    item.addEventListener('click', () => selectGemCut(i));
+    cutGrid.appendChild(item);
+  });
+}
+
+function selectGemColor(idx) {
+  state.selectedGemColor = idx;
+  document.querySelectorAll('.gem-color-item').forEach((el, i) => {
+    el.querySelector('.gem-dot').classList.toggle('selected', i === idx);
+  });
+  checkGemReady();
+}
+
+function selectGemCut(idx) {
+  state.selectedGemCut = idx;
+  document.querySelectorAll('.gem-cut-icon').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+  checkGemReady();
+}
+
+function checkGemReady() {
+  const btn = document.getElementById('btn-add-gem');
+  const ready = state.selectedGemColor !== null && state.selectedGemCut !== null;
+  btn.classList.toggle('ready', ready);
+}
+
+// ============================================================
+// PROJECT ZONE UPDATE
+// ============================================================
+function updateProjectZones() {
+  const zones = ['first','second','third','fourth','final'];
+  zones.forEach(z => {
+    const el = document.getElementById(`${z}-project-zone`);
+    if (!el) return;
+    if (state.jewelryType || state.projectName) {
+      el.innerHTML = `
+        ${state.jewelryType ? `<div class="project-type">${state.jewelryType}</div>` : ''}
+        ${state.projectName ? `<h2 class="project-name title-font">${state.projectName}</h2>` : ''}
+      `;
+    } else {
+      el.innerHTML = '';
+    }
+  });
+}
+
+// ============================================================
+// IMAGE GRID RENDER
+// ============================================================
+function renderImageGrids() {
+  ['second','third','fourth','final'].forEach(id => {
+    const grid = document.getElementById(`image-grid-${id}`);
+    if (!grid) return;
+    grid.innerHTML = '';
+    if (state.images.length === 0) return;
+    state.images.forEach(src => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = 'Reference image';
+      grid.appendChild(img);
+    });
+  });
+}
+
+// ============================================================
+// GEMSTONE DISPLAY
+// ============================================================
+function renderGemstoneDisplays() {
+  ['gemstone-selected-display','gemstone-display-4','gemstone-display-final'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '';
+    state.gemstones.forEach((g, idx) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'selected-gem';
+      wrap.innerHTML = `
+        <div class="selected-gem-img">${gemFilledSVG(g.color, g.cutName)}</div>
+        <div class="selected-item-label">${g.colorName}<br>${g.cutName}-cut</div>
+        <div class="remove-btn" data-idx="${idx}">✕</div>
+      `;
+      wrap.querySelector('.remove-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        state.gemstones.splice(idx, 1);
+        renderGemstoneDisplays();
+        checkStep3Nav();
+      });
+      el.appendChild(wrap);
+    });
+  });
+}
+
+// ============================================================
+// MATERIAL DISPLAY
+// ============================================================
+function renderMaterialDisplays() {
+  ['material-selected-display','material-display-final'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '';
+    state.materials.forEach((m, idx) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'selected-material';
+      wrap.innerHTML = `
+        <div class="selected-material-img">${materialSphereSVG(m.name)}</div>
+        <div class="selected-item-label">${m.name}<br>18-karat</div>
+        <div class="remove-btn" data-idx="${idx}">✕</div>
+      `;
+      wrap.querySelector('.remove-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        state.materials.splice(idx, 1);
+        renderMaterialDisplays();
+        checkStep4Nav();
+      });
+      el.appendChild(wrap);
+    });
+  });
+}
+
+// ============================================================
+// NAV CHECKS
+// ============================================================
+function checkStep1Nav() {
+  document.getElementById('btn-next-1').disabled = !state.jewelryType;
+}
+function checkStep2Nav() {
+  document.getElementById('btn-next-2').disabled = state.images.length === 0;
+}
+function checkStep3Nav() {
+  document.getElementById('btn-next-3').disabled = state.gemstones.length === 0;
+}
+function checkStep4Nav() {
+  document.getElementById('btn-next-4').disabled = state.materials.length === 0;
+}
+
+// ============================================================
+// PAGE NAVIGATION
+// ============================================================
+const pages = ['first','second','third','fourth','final'];
+let currentPage = 0;
+
+function goToPage(idx) {
+  pages.forEach((p, i) => {
+    const el = document.getElementById(`page-${p}`);
+    el.classList.remove('active','page-transition');
+    if (i === idx) {
+      el.classList.add('active');
+      requestAnimationFrame(() => el.classList.add('page-transition'));
+    }
+  });
+  currentPage = idx;
+  window.scrollTo(0,0);
+  if (idx >= 1) renderImageGrids();
+  if (idx >= 2) renderGemstoneDisplays();
+  if (idx >= 3) { renderGemstoneDisplays(); renderMaterialDisplays(); }
+  if (idx === 4) {
+    renderImageGrids();
+    renderGemstoneDisplays();
+    renderMaterialDisplays();
+  }
+}
+
+// ============================================================
+// STEP 1
+// ============================================================
+document.querySelectorAll('.jewelry-type-item').forEach(item => {
+  item.addEventListener('click', () => {
+    state.jewelryType = item.dataset.type;
+    document.querySelectorAll('.jewelry-type-item .radio-circle').forEach(r => r.classList.remove('selected'));
+    item.querySelector('.radio-circle').classList.add('selected');
+    updateProjectZones();
+    checkStep1Nav();
+  });
+});
+
+document.getElementById('project-name-input').addEventListener('input', (e) => {
+  state.projectName = e.target.value;
+  updateProjectZones();
+});
+
+document.getElementById('btn-next-1').addEventListener('click', () => goToPage(1));
+document.getElementById('btn-finish-1').addEventListener('click', () => { if(state.jewelryType) goToPage(4); });
+
+// ============================================================
+// STEP 2 — UPLOAD
+// ============================================================
+const fileInput = document.getElementById('file-input');
+const uploadZone = document.getElementById('upload-zone');
+
+document.getElementById('btn-upload-trigger').addEventListener('click', (e) => {
+  e.stopPropagation();
+  fileInput.click();
+});
+uploadZone.addEventListener('click', () => fileInput.click());
+
+uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove('drag-over');
+  handleFiles(e.dataTransfer.files);
+});
+
+fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+function handleFiles(files) {
+  if (!files.length) return;
+  showLoading(true);
+  let loaded = 0;
+  Array.from(files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      state.images.push(e.target.result);
+      loaded++;
+      if (loaded === files.length) {
+        showLoading(false);
+        renderImageGrids();
+        checkStep2Nav();
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function showLoading(show) {
+  document.getElementById('loading-overlay').classList.toggle('visible', show);
+}
+
+document.getElementById('btn-prev-2').addEventListener('click', () => goToPage(0));
+document.getElementById('btn-next-2').addEventListener('click', () => goToPage(2));
+document.getElementById('btn-finish-2').addEventListener('click', () => { if(state.images.length) goToPage(4); });
+
+// ============================================================
+// STEP 3 — GEMSTONES
+// ============================================================
+document.getElementById('btn-add-gem').addEventListener('click', () => {
+  if (state.selectedGemColor === null || state.selectedGemCut === null) return;
+  const gc = gemColors[state.selectedGemColor];
+  const cut = gemCuts[state.selectedGemCut];
+  state.gemstones.push({ color: gc.color, colorName: gc.name, cut: state.selectedGemCut, cutName: cut.name });
+  // reset
+  state.selectedGemColor = null;
+  state.selectedGemCut = null;
+  document.querySelectorAll('.gem-dot').forEach(d => d.classList.remove('selected'));
+  document.querySelectorAll('.gem-cut-icon').forEach(d => d.classList.remove('selected'));
+  document.getElementById('btn-add-gem').classList.remove('ready');
+  renderGemstoneDisplays();
+  checkStep3Nav();
+});
+
+document.getElementById('btn-prev-3').addEventListener('click', () => goToPage(1));
+document.getElementById('btn-next-3').addEventListener('click', () => goToPage(3));
+document.getElementById('btn-finish-3').addEventListener('click', () => { if(state.gemstones.length) goToPage(4); });
+
+// ============================================================
+// STEP 4 — MATERIALS
+// ============================================================
+const materialItems = document.querySelectorAll('.material-item');
+materialItems.forEach(item => {
+  item.addEventListener('click', () => {
+    state.selectedMaterial = item.dataset.material;
+    materialItems.forEach(m => {
+      m.querySelector('.material-sphere').classList.remove('selected');
+    });
+    item.querySelector('.material-sphere').classList.add('selected');
+    document.getElementById('btn-add-material').classList.add('ready');
+  });
+});
+
+document.getElementById('btn-add-material').addEventListener('click', () => {
+  if (!state.selectedMaterial) return;
+  // avoid duplicates
+  if (!state.materials.find(m => m.name === state.selectedMaterial)) {
+    state.materials.push({ name: state.selectedMaterial });
+  }
+  materialItems.forEach(m => m.querySelector('.material-sphere').classList.remove('selected'));
+  state.selectedMaterial = null;
+  document.getElementById('btn-add-material').classList.remove('ready');
+  renderMaterialDisplays();
+  checkStep4Nav();
+});
+
+document.getElementById('btn-prev-4').addEventListener('click', () => goToPage(2));
+document.getElementById('btn-next-4').addEventListener('click', () => goToPage(4));
+document.getElementById('btn-finish-4').addEventListener('click', () => { if(state.materials.length) goToPage(4); });
+
+// ============================================================
+// FINAL STEP — EMAIL SEND + PDF
+// ============================================================
+const emailInput = document.getElementById('email-input');
+const sendBtn = document.getElementById('btn-send');
+const sentMsg = document.getElementById('project-sent-msg');
+const emailWrap = document.getElementById('email-wrap');
+
+sendBtn.addEventListener('click', () => {
+  const email = emailInput.value.trim();
+  if (!email || !email.includes('@')) return;
+  // animate: show sent message
+  emailWrap.style.display = 'none';
+  sentMsg.style.display = 'block';
+  // open PDF in new tab after brief delay
+  setTimeout(() => {
+    openPDF();
+  }, 600);
+  // reset after 3s
+  setTimeout(() => {
+    sentMsg.style.display = 'none';
+    emailWrap.style.display = 'block';
+    emailInput.value = '';
+  }, 3000);
+});
+
+function openPDF() {
+  // encode state into query params for PDF page
+  const params = new URLSearchParams({
+    type: state.jewelryType,
+    name: state.projectName,
+    gems: JSON.stringify(state.gemstones.map(g => ({c: g.color, cn: g.colorName, cut: g.cutName}))),
+    mats: JSON.stringify(state.materials.map(m => m.name)),
+    imgs: JSON.stringify(state.images.slice(0,6)), // pass up to 6 images
+  });
+  // Use sessionStorage to pass large data
+  sessionStorage.setItem('cdi_project', JSON.stringify({
+    jewelryType: state.jewelryType,
+    projectName: state.projectName,
+    gemstones: state.gemstones,
+    materials: state.materials,
+    images: state.images,
+  }));
+  window.open('pdf.html', '_blank');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+initGemGrids();
+updateProjectZones();
+</script>
+</body>
+</html>
