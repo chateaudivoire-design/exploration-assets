@@ -27,7 +27,6 @@
     min-height: 100vh;
   }
 
-  /* TYPOGRAPHY */
   .title-font { font-family: 'Playfair Display', serif; font-weight: 400; }
 
   /* NAV */
@@ -43,6 +42,7 @@
   .nav-right { display: flex; align-items: center; gap: 16px; }
   .nav-badge { font-size: 11px; font-weight: 500; color: var(--dark-gold); }
   .nav-icon { width: 20px; height: 20px; cursor: pointer; color: var(--black-leather); }
+  .nav-logo-icon { height: 28px; width: auto; display: block; }
 
   /* HERO */
   .hero {
@@ -56,7 +56,7 @@
   .hero-breadcrumb { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 20px; letter-spacing: 0.04em; }
   .hero-breadcrumb span { opacity: 0.7; }
   .hero-icon { position: absolute; right: 40px; top: 50%; transform: translateY(-50%); opacity: 0.9; }
-  .castle-icon { width: 64px; height: 64px; }
+  .castle-icon { width: 40px; height: auto; }
 
   /* PROJECT TITLE ZONE */
   .project-zone {
@@ -66,6 +66,35 @@
   }
   .project-type { font-size: 13px; color: var(--dark-gold); font-weight: 400; margin-bottom: 4px; letter-spacing: 0.04em; }
   .project-name { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 42px); color: var(--dark-gold); font-weight: 400; }
+
+  /* EDIT / RETURN BUTTON */
+  .btn-edit-project {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 20px 9px 14px;
+    border: var(--stroke) solid var(--dark-leather);
+    border-radius: 20px;
+    background: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px; font-weight: 400;
+    color: var(--dark-leather);
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    margin-top: 14px;
+  }
+  .btn-edit-project:hover {
+    background: var(--dark-leather);
+    color: var(--white);
+  }
+  .btn-edit-project:hover .edit-arrow { border-right-color: var(--white); }
+  .edit-arrow {
+    width: 0; height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 7px solid var(--dark-leather);
+    transition: border-right-color 0.2s;
+    flex-shrink: 0;
+  }
 
   /* MAIN CONTENT */
   .main-content { padding: 0 40px 32px; background: var(--white); }
@@ -77,11 +106,48 @@
     gap: 4px;
     margin-bottom: 20px;
   }
-  .image-grid img {
-    width: 100%; height: 220px; object-fit: cover;
-    display: block; border-radius: 2px;
+
+  /* IMAGE BOX — with delete support */
+  .image-box {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 2px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: border-color 0.2s;
   }
-  .image-grid .img-large { grid-column: span 1; }
+  .image-box img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    display: block;
+  }
+  .image-box-delete {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    background: var(--dark-green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s, background 0.2s;
+    border: none;
+    color: white;
+    font-size: 11px;
+    line-height: 1;
+    z-index: 10;
+  }
+  .image-box:hover { border-color: var(--dark-green); }
+  .image-box:hover .image-box-delete { opacity: 1; }
+  .image-box-delete:hover { background: #C0392B; }
+  .image-box.pressed { border-color: #C0392B; }
+  .image-box.pressed .image-box-delete { opacity: 1; background: #C0392B; }
 
   /* SELECTION CARDS */
   .selection-cards {
@@ -102,6 +168,7 @@
     width: 52px; height: 52px; position: relative;
   }
   .selected-gem-img svg, .selected-material-img svg { width: 100%; height: 100%; }
+  .selected-gem-img img, .selected-material-img img { width: 100%; height: 100%; object-fit: contain; }
   .selected-item-label { font-size: 10px; text-align: center; color: var(--dark-leather); line-height: 1.3; }
   .remove-btn {
     width: 20px; height: 20px; border-radius: 50%;
@@ -326,7 +393,7 @@
     display: none;
   }
 
-  /* GEMSTONE SVG colors */
+  /* GEMSTONE SVG colors (fallback) */
   .gem-garnet { fill: #C0472A; }
   .gem-amethyst { fill: #7B4F9E; }
   .gem-aquamarine { fill: #5BBFB5; }
@@ -344,16 +411,16 @@
   .page { display: none; }
   .page.active { display: block; }
 
-  /* SCROLLABLE CONTENT */
+  /* SCROLLABLE CONTENT — extra bottom padding so sticky footer never overlaps */
   .scrollable-content {
-    padding-bottom: 200px;
+    padding-bottom: 280px;
   }
 
   /* RESPONSIVE */
   @media (max-width: 768px) {
     .hero { padding: 24px 20px 20px; }
     .hero-title { font-size: 32px; }
-    .castle-icon { width: 44px; height: 44px; }
+    .castle-icon { width: 30px; }
     .hero-icon { right: 20px; }
     .project-zone { padding: 20px 20px 16px; }
     .main-content { padding: 0 20px 24px; }
@@ -361,13 +428,15 @@
     .footer-inner { flex-wrap: wrap; }
     .footer-divider { display: none; }
     .footer-right { flex-direction: row; justify-content: space-between; width: 100%; margin-top: 12px; }
-    .image-grid img { height: 120px; }
+    .image-grid { grid-template-columns: 1fr; }
+    .image-grid .image-box img { height: 260px; }
     .gem-footer { flex-direction: column; gap: 16px; }
     .gem-color-grid { grid-template-columns: repeat(6, 1fr); }
     .confirmator-inner { flex-direction: column; }
     .confirmator-divider { display: none; }
     .selection-cards { grid-template-columns: 1fr; }
     .site-nav { padding: 12px 20px; }
+    .scrollable-content { padding-bottom: 360px; }
   }
 
   /* TRANSITIONS */
@@ -400,37 +469,36 @@
   </div>
 </nav>
 
+<!-- CASTLE ICON SVG (reusable via JS) -->
+<template id="castle-icon-tpl"><svg width="81" height="111" viewBox="0 0 81 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_93_329)">
+<path d="M21.6696 89.5918H0V111H21.6696V89.5918Z" fill="white"/>
+<path d="M21.6696 60.3784H0V81.7866H21.6696V60.3784Z" fill="white"/>
+<path d="M21.6696 31.165H0V52.5545H21.6696V31.165Z" fill="white"/>
+<path d="M51.3347 89.5918H29.665V111H51.3347V89.5918Z" fill="white"/>
+<path d="M51.3347 60.3784H29.665V81.7866H51.3347V60.3784Z" fill="white"/>
+<path d="M81.0002 89.5918H59.3306V111H81.0002V89.5918Z" fill="white"/>
+<path d="M81.0002 60.3784H59.3306V81.7866H81.0002V60.3784Z" fill="white"/>
+<path d="M81.0002 31.165H59.3306V52.5545H81.0002V31.165Z" fill="white"/>
+<path d="M0.151855 23.2094L10.8822 0L21.6126 23.2094H0.151855Z" fill="white"/>
+<path d="M59.5391 23.2094L70.2504 0L80.9998 23.2094H59.5391Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip0_93_329">
+<rect width="81" height="111" fill="white"/>
+</clipPath>
+</defs>
+</svg></template>
+
 <!-- ==================== PAGE: FIRST STEP ==================== -->
 <div class="page active page-transition" id="page-first">
   <div class="hero">
     <div class="hero-eyebrow">Custom Jewelry Creation</div>
     <h1 class="hero-title">Exploration</h1>
     <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
-    <div class="hero-icon">
-      <svg class="castle-icon" viewBox="0 0 81 111" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_93_329)">
-          <path d="M21.6696 89.5918H0V111H21.6696V89.5918Z" fill="white"/>
-          <path d="M21.6696 60.3784H0V81.7866H21.6696V60.3784Z" fill="white"/>
-          <path d="M21.6696 31.165H0V52.5545H21.6696V31.165Z" fill="white"/>
-          <path d="M51.3347 89.5918H29.665V111H51.3347V89.5918Z" fill="white"/>
-          <path d="M51.3347 60.3784H29.665V81.7866H51.3347V60.3784Z" fill="white"/>
-          <path d="M81.0002 89.5918H59.3306V111H81.0002V89.5918Z" fill="white"/>
-          <path d="M81.0002 60.3784H59.3306V81.7866H81.0002V60.3784Z" fill="white"/>
-          <path d="M81.0002 31.165H59.3306V52.5545H81.0002V31.165Z" fill="white"/>
-          <path d="M0.151855 23.2094L10.8822 0L21.6126 23.2094H0.151855Z" fill="white"/>
-          <path d="M59.5391 23.2094L70.2504 0L80.9998 23.2094H59.5391Z" fill="white"/>
-        </g>
-        <defs>
-          <clipPath id="clip0_93_329">
-            <rect width="81" height="111" fill="white"/>
-          </clipPath>
-        </defs>
-      </svg>
-    </div>
+    <div class="hero-icon"><span class="castle-icon"></span></div>
   </div>
-  <div class="project-zone" id="first-project-zone" style="min-height:100px;">
-    <!-- populated dynamically -->
-  </div>
+  <div class="project-zone" id="first-project-zone" style="min-height:100px;"></div>
   <div style="height: 220px;"></div>
   <!-- FOOTER -->
   <div class="sticky-footer" id="footer-first">
@@ -469,27 +537,7 @@
     <div class="hero-eyebrow">Custom Jewelry Creation</div>
     <h1 class="hero-title">Exploration</h1>
     <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
-    <div class="hero-icon">
-      <svg class="castle-icon" viewBox="0 0 81 111" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_93_329)">
-          <path d="M21.6696 89.5918H0V111H21.6696V89.5918Z" fill="white"/>
-          <path d="M21.6696 60.3784H0V81.7866H21.6696V60.3784Z" fill="white"/>
-          <path d="M21.6696 31.165H0V52.5545H21.6696V31.165Z" fill="white"/>
-          <path d="M51.3347 89.5918H29.665V111H51.3347V89.5918Z" fill="white"/>
-          <path d="M51.3347 60.3784H29.665V81.7866H51.3347V60.3784Z" fill="white"/>
-          <path d="M81.0002 89.5918H59.3306V111H81.0002V89.5918Z" fill="white"/>
-          <path d="M81.0002 60.3784H59.3306V81.7866H81.0002V60.3784Z" fill="white"/>
-          <path d="M81.0002 31.165H59.3306V52.5545H81.0002V31.165Z" fill="white"/>
-          <path d="M0.151855 23.2094L10.8822 0L21.6126 23.2094H0.151855Z" fill="white"/>
-          <path d="M59.5391 23.2094L70.2504 0L80.9998 23.2094H59.5391Z" fill="white"/>
-        </g>
-        <defs>
-          <clipPath id="clip0_93_329">
-            <rect width="81" height="111" fill="white"/>
-          </clipPath>
-        </defs>
-      </svg>
-    </div>
+    <div class="hero-icon"><span class="castle-icon"></span></div>
   </div>
   <div class="project-zone" id="second-project-zone"></div>
   <div class="main-content scrollable-content">
@@ -527,27 +575,7 @@
     <div class="hero-eyebrow">Custom Jewelry Creation</div>
     <h1 class="hero-title">Exploration</h1>
     <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
-    <div class="hero-icon">
-      <svg class="castle-icon" viewBox="0 0 81 111" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_93_329)">
-          <path d="M21.6696 89.5918H0V111H21.6696V89.5918Z" fill="white"/>
-          <path d="M21.6696 60.3784H0V81.7866H21.6696V60.3784Z" fill="white"/>
-          <path d="M21.6696 31.165H0V52.5545H21.6696V31.165Z" fill="white"/>
-          <path d="M51.3347 89.5918H29.665V111H51.3347V89.5918Z" fill="white"/>
-          <path d="M51.3347 60.3784H29.665V81.7866H51.3347V60.3784Z" fill="white"/>
-          <path d="M81.0002 89.5918H59.3306V111H81.0002V89.5918Z" fill="white"/>
-          <path d="M81.0002 60.3784H59.3306V81.7866H81.0002V60.3784Z" fill="white"/>
-          <path d="M81.0002 31.165H59.3306V52.5545H81.0002V31.165Z" fill="white"/>
-          <path d="M0.151855 23.2094L10.8822 0L21.6126 23.2094H0.151855Z" fill="white"/>
-          <path d="M59.5391 23.2094L70.2504 0L80.9998 23.2094H59.5391Z" fill="white"/>
-        </g>
-        <defs>
-          <clipPath id="clip0_93_329">
-            <rect width="81" height="111" fill="white"/>
-          </clipPath>
-        </defs>
-      </svg>
-    </div>
+    <div class="hero-icon"><span class="castle-icon"></span></div>
   </div>
   <div class="project-zone" id="third-project-zone"></div>
   <div class="main-content scrollable-content">
@@ -603,27 +631,7 @@
     <div class="hero-eyebrow">Custom Jewelry Creation</div>
     <h1 class="hero-title">Exploration</h1>
     <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
-    <div class="hero-icon">
-      <svg class="castle-icon" viewBox="0 0 81 111" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_93_329)">
-          <path d="M21.6696 89.5918H0V111H21.6696V89.5918Z" fill="white"/>
-          <path d="M21.6696 60.3784H0V81.7866H21.6696V60.3784Z" fill="white"/>
-          <path d="M21.6696 31.165H0V52.5545H21.6696V31.165Z" fill="white"/>
-          <path d="M51.3347 89.5918H29.665V111H51.3347V89.5918Z" fill="white"/>
-          <path d="M51.3347 60.3784H29.665V81.7866H51.3347V60.3784Z" fill="white"/>
-          <path d="M81.0002 89.5918H59.3306V111H81.0002V89.5918Z" fill="white"/>
-          <path d="M81.0002 60.3784H59.3306V81.7866H81.0002V60.3784Z" fill="white"/>
-          <path d="M81.0002 31.165H59.3306V52.5545H81.0002V31.165Z" fill="white"/>
-          <path d="M0.151855 23.2094L10.8822 0L21.6126 23.2094H0.151855Z" fill="white"/>
-          <path d="M59.5391 23.2094L70.2504 0L80.9998 23.2094H59.5391Z" fill="white"/>
-        </g>
-        <defs>
-          <clipPath id="clip0_93_329">
-            <rect width="81" height="111" fill="white"/>
-          </clipPath>
-        </defs>
-      </svg>
-    </div>
+    <div class="hero-icon"><span class="castle-icon"></span></div>
   </div>
   <div class="project-zone" id="fourth-project-zone"></div>
   <div class="main-content scrollable-content">
@@ -684,29 +692,13 @@
     <div class="hero-eyebrow">Custom Jewelry Creation</div>
     <h1 class="hero-title">Exploration</h1>
     <div class="hero-breadcrumb"><span>Our Services</span> / Custom Jewelry Creation</div>
-    <div class="hero-icon">
-      <svg class="castle-icon" viewBox="0 0 81 111" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_93_329)">
-          <path d="M21.6696 89.5918H0V111H21.6696V89.5918Z" fill="white"/>
-          <path d="M21.6696 60.3784H0V81.7866H21.6696V60.3784Z" fill="white"/>
-          <path d="M21.6696 31.165H0V52.5545H21.6696V31.165Z" fill="white"/>
-          <path d="M51.3347 89.5918H29.665V111H51.3347V89.5918Z" fill="white"/>
-          <path d="M51.3347 60.3784H29.665V81.7866H51.3347V60.3784Z" fill="white"/>
-          <path d="M81.0002 89.5918H59.3306V111H81.0002V89.5918Z" fill="white"/>
-          <path d="M81.0002 60.3784H59.3306V81.7866H81.0002V60.3784Z" fill="white"/>
-          <path d="M81.0002 31.165H59.3306V52.5545H81.0002V31.165Z" fill="white"/>
-          <path d="M0.151855 23.2094L10.8822 0L21.6126 23.2094H0.151855Z" fill="white"/>
-          <path d="M59.5391 23.2094L70.2504 0L80.9998 23.2094H59.5391Z" fill="white"/>
-        </g>
-        <defs>
-          <clipPath id="clip0_93_329">
-            <rect width="81" height="111" fill="white"/>
-          </clipPath>
-        </defs>
-      </svg>
-    </div>
+    <div class="hero-icon"><span class="castle-icon"></span></div>
   </div>
-  <div class="project-zone" id="final-project-zone"></div>
+  <div class="project-zone" id="final-project-zone">
+    <button class="btn-edit-project" id="btn-edit-project">
+      <span class="edit-arrow"></span>Edit Project
+    </button>
+  </div>
   <div class="main-content" style="padding-bottom: 0;">
     <div class="image-grid" id="image-grid-final"></div>
     <div class="selection-cards" style="margin-bottom: 0; padding-bottom: 32px;">
@@ -746,6 +738,47 @@
 </div>
 
 <script>
+const SVG_ASSETS = {
+  "ChateauDIvoire-icon": `<svg width="81" height="111" viewBox="0 0 81 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_120_2760)">
+<path d="M21.6696 89.5918H0V111H21.6696V89.5918Z" fill="#182518"/>
+<path d="M21.6696 60.3784H0V81.7866H21.6696V60.3784Z" fill="#182518"/>
+<path d="M21.6696 31.165H0V52.5545H21.6696V31.165Z" fill="#182518"/>
+<path d="M51.3357 89.5918H29.666V111H51.3357V89.5918Z" fill="#182518"/>
+<path d="M51.3357 60.3784H29.666V81.7866H51.3357V60.3784Z" fill="#182518"/>
+<path d="M80.9997 89.5918H59.3301V111H80.9997V89.5918Z" fill="#182518"/>
+<path d="M80.9997 60.3784H59.3301V81.7866H80.9997V60.3784Z" fill="#182518"/>
+<path d="M80.9997 31.165H59.3301V52.5545H80.9997V31.165Z" fill="#182518"/>
+<path d="M0.152344 23.2094L10.8827 0L21.6131 23.2094H0.152344Z" fill="#182518"/>
+<path d="M59.5391 23.2094L70.2504 0L80.9998 23.2094H59.5391Z" fill="#182518"/>
+</g>
+<defs>
+<clipPath id="clip0_120_2760">
+<rect width="81" height="111" fill="white"/>
+</clipPath>
+</defs>
+</svg>`,
+  "ChateauDIvoire_Icon": `<svg width="81" height="111" viewBox="0 0 81 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_93_329)">
+<path d="M21.6696 89.5918H0V111H21.6696V89.5918Z" fill="white"/>
+<path d="M21.6696 60.3784H0V81.7866H21.6696V60.3784Z" fill="white"/>
+<path d="M21.6696 31.165H0V52.5545H21.6696V31.165Z" fill="white"/>
+<path d="M51.3347 89.5918H29.665V111H51.3347V89.5918Z" fill="white"/>
+<path d="M51.3347 60.3784H29.665V81.7866H51.3347V60.3784Z" fill="white"/>
+<path d="M81.0002 89.5918H59.3306V111H81.0002V89.5918Z" fill="white"/>
+<path d="M81.0002 60.3784H59.3306V81.7866H81.0002V60.3784Z" fill="white"/>
+<path d="M81.0002 31.165H59.3306V52.5545H81.0002V31.165Z" fill="white"/>
+<path d="M0.151855 23.2094L10.8822 0L21.6126 23.2094H0.151855Z" fill="white"/>
+<path d="M59.5391 23.2094L70.2504 0L80.9998 23.2094H59.5391Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip0_93_329">
+<rect width="81" height="111" fill="white"/>
+</clipPath>
+</defs>
+</svg>`,
+};
+
 // ============================================================
 // STATE
 // ============================================================
@@ -764,7 +797,7 @@ const gemColors = [
   { name: 'Garnet',      color: '#C0472A', cls: 'garnet' },
   { name: 'Amethyst',    color: '#7B4F9E', cls: 'amethyst' },
   { name: 'Aquamarine',  color: '#5BBFB5', cls: 'aquamarine' },
-  { name: 'Diamond',     color: '#FFFFFF', cls: 'diamond', stroke: '#aaa' },
+  { name: 'Diamond',     color: '#FFFFFF', cls: 'diamond' },
   { name: 'Emerald',     color: '#1A7A40', cls: 'emerald-c' },
   { name: 'Alexandrite', color: '#8BC5A0', cls: 'alexandrite' },
   { name: 'Ruby',        color: '#B5192B', cls: 'ruby' },
@@ -785,6 +818,21 @@ const gemCuts = [
   { name: 'Heart',    svg: heartSVG() },
   { name: 'Pear',     svg: pearSVG() },
 ];
+
+// ============================================================
+// HELPERS — inject castle icon into all .castle-icon spans
+// ============================================================
+function initCastleIcons() {
+  document.querySelectorAll('.castle-icon').forEach(el => {
+    const tpl = document.getElementById('castle-icon-tpl');
+    if (tpl) {
+      const svg = tpl.content.firstElementChild.cloneNode(true);
+      svg.style.width = '40px';
+      svg.style.height = 'auto';
+      el.appendChild(svg);
+    }
+  });
+}
 
 // ============================================================
 // GEM CUT SVGs (outline style)
@@ -1310,9 +1358,9 @@ function getFilledCutPath(cutName) {
 // Material sphere SVG
 function materialSphereSVG(type, size = 48) {
   const gradients = {
-    'White Gold': `<defs><radialGradient id="wg" cx="35%" cy="35%"><stop offset="0%" stop-color="#f5f5f5"/><stop offset="60%" stop-color="#c0c0c0"/><stop offset="100%" stop-color="#808080"/></radialGradient></defs><circle cx="${size/2}" cy="${size/2}" r="${size/2-2}" fill="url(#wg)"/>`,
-    'Yellow Gold': `<defs><radialGradient id="yg" cx="35%" cy="35%"><stop offset="0%" stop-color="#f5e070"/><stop offset="55%" stop-color="#c9a227"/><stop offset="100%" stop-color="#8a6a0a"/></radialGradient></defs><circle cx="${size/2}" cy="${size/2}" r="${size/2-2}" fill="url(#yg)"/>`,
-    'Rose Gold': `<defs><radialGradient id="rg" cx="35%" cy="35%"><stop offset="0%" stop-color="#f5c5a3"/><stop offset="55%" stop-color="#d4836a"/><stop offset="100%" stop-color="#9a4a2a"/></radialGradient></defs><circle cx="${size/2}" cy="${size/2}" r="${size/2-2}" fill="url(#rg)"/>`,
+    'White Gold': `<defs><radialGradient id="wg${size}" cx="35%" cy="35%"><stop offset="0%" stop-color="#f5f5f5"/><stop offset="60%" stop-color="#c0c0c0"/><stop offset="100%" stop-color="#808080"/></radialGradient></defs><circle cx="${size/2}" cy="${size/2}" r="${size/2-2}" fill="url(#wg${size})"/>`,
+    'Yellow Gold': `<defs><radialGradient id="yg${size}" cx="35%" cy="35%"><stop offset="0%" stop-color="#f5e070"/><stop offset="55%" stop-color="#c9a227"/><stop offset="100%" stop-color="#8a6a0a"/></radialGradient></defs><circle cx="${size/2}" cy="${size/2}" r="${size/2-2}" fill="url(#yg${size})"/>`,
+    'Rose Gold': `<defs><radialGradient id="rg${size}" cx="35%" cy="35%"><stop offset="0%" stop-color="#f5c5a3"/><stop offset="55%" stop-color="#d4836a"/><stop offset="100%" stop-color="#9a4a2a"/></radialGradient></defs><circle cx="${size/2}" cy="${size/2}" r="${size/2-2}" fill="url(#rg${size})"/>`,
   };
   return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">${gradients[type]||gradients['White Gold']}</svg>`;
 }
@@ -1374,31 +1422,54 @@ function updateProjectZones() {
   zones.forEach(z => {
     const el = document.getElementById(`${z}-project-zone`);
     if (!el) return;
-    if (state.jewelryType || state.projectName) {
-      el.innerHTML = `
-        ${state.jewelryType ? `<div class="project-type">${state.jewelryType}</div>` : ''}
-        ${state.projectName ? `<h2 class="project-name title-font">${state.projectName}</h2>` : ''}
-      `;
+    const infoHtml = (state.jewelryType || state.projectName) ? `
+      ${state.jewelryType ? `<div class="project-type">${state.jewelryType}</div>` : ''}
+      ${state.projectName ? `<h2 class="project-name title-font">${state.projectName}</h2>` : ''}
+    ` : '';
+    if (z === 'final') {
+      // Keep the edit button; only update the info prefix
+      el.innerHTML = infoHtml + `
+        <button class="btn-edit-project" id="btn-edit-project">
+          <span class="edit-arrow"></span>Edit Project
+        </button>`;
+      // Re-attach listener after innerHTML reset
+      document.getElementById('btn-edit-project').addEventListener('click', handleEditProject);
     } else {
-      el.innerHTML = '';
+      el.innerHTML = infoHtml;
     }
   });
 }
 
 // ============================================================
-// IMAGE GRID RENDER
+// IMAGE GRID RENDER — with delete button
 // ============================================================
 function renderImageGrids() {
-  ['second','third','fourth','final'].forEach(id => {
-    const grid = document.getElementById(`image-grid-${id}`);
+  ['second','third','fourth','final'].forEach(pageId => {
+    const grid = document.getElementById(`image-grid-${pageId}`);
     if (!grid) return;
     grid.innerHTML = '';
     if (state.images.length === 0) return;
-    state.images.forEach(src => {
-      const img = document.createElement('img');
-      img.src = src;
-      img.alt = 'Reference image';
-      grid.appendChild(img);
+    state.images.forEach((src, idx) => {
+      const box = document.createElement('div');
+      box.className = 'image-box';
+      box.innerHTML = `
+        <img src="${src}" alt="Reference image">
+        <button class="image-box-delete" title="Remove image" data-idx="${idx}">&#x2715;</button>
+      `;
+      // Hover/pressed states
+      box.addEventListener('mouseenter', () => box.classList.add('hovered'));
+      box.addEventListener('mouseleave', () => box.classList.remove('hovered', 'pressed'));
+      // Delete button
+      box.querySelector('.image-box-delete').addEventListener('click', (e) => {
+        e.stopPropagation();
+        box.classList.add('pressed');
+        setTimeout(() => {
+          state.images.splice(idx, 1);
+          renderImageGrids();
+          checkStep2Nav();
+        }, 150);
+      });
+      grid.appendChild(box);
     });
   });
 }
@@ -1444,7 +1515,7 @@ function renderMaterialDisplays() {
       wrap.innerHTML = `
         <div class="selected-material-img">${materialSphereSVG(m.name)}</div>
         <div class="selected-item-label">${m.name}<br>18-karat</div>
-        <div class="remove-btn" data-idx="${idx}">✕</div>
+        <div class="remove-btn" data-idx="${idx}">&#x2715;</div>
       `;
       wrap.querySelector('.remove-btn').addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1532,7 +1603,6 @@ document.getElementById('btn-upload-trigger').addEventListener('click', (e) => {
   fileInput.click();
 });
 uploadZone.addEventListener('click', () => fileInput.click());
-
 uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
 uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
 uploadZone.addEventListener('drop', (e) => {
@@ -1540,7 +1610,6 @@ uploadZone.addEventListener('drop', (e) => {
   uploadZone.classList.remove('drag-over');
   handleFiles(e.dataTransfer.files);
 });
-
 fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
 function handleFiles(files) {
@@ -1578,11 +1647,16 @@ document.getElementById('btn-add-gem').addEventListener('click', () => {
   const gc = gemColors[state.selectedGemColor];
   const cut = gemCuts[state.selectedGemCut];
   state.gemstones.push({ color: gc.color, colorName: gc.name, cut: state.selectedGemCut, cutName: cut.name });
-  // reset
   state.selectedGemColor = null;
   state.selectedGemCut = null;
-  document.querySelectorAll('.gem-dot').forEach(d => d.classList.remove('selected'));
-  document.querySelectorAll('.gem-cut-icon').forEach(d => d.classList.remove('selected'));
+  document.querySelectorAll('.gem-icon-wrap').forEach(d => d.classList.remove('selected'));
+  document.querySelectorAll('[id^="gem-cut-icon-"]').forEach((el, i) => {
+    el.classList.remove('selected');
+    const cutName = gemCuts[i].name;
+    if (cutName === 'Cushion' || cutName === 'Emerald') {
+      el.innerHTML = SVG_ASSETS['CutType-Icon-Default'];
+    }
+  });
   document.getElementById('btn-add-gem').classList.remove('ready');
   renderGemstoneDisplays();
   checkStep3Nav();
@@ -1599,9 +1673,7 @@ const materialItems = document.querySelectorAll('.material-item');
 materialItems.forEach(item => {
   item.addEventListener('click', () => {
     state.selectedMaterial = item.dataset.material;
-    materialItems.forEach(m => {
-      m.querySelector('.material-sphere').classList.remove('selected');
-    });
+    materialItems.forEach(m => m.querySelector('.material-sphere').classList.remove('selected'));
     item.querySelector('.material-sphere').classList.add('selected');
     document.getElementById('btn-add-material').classList.add('ready');
   });
@@ -1609,7 +1681,6 @@ materialItems.forEach(item => {
 
 document.getElementById('btn-add-material').addEventListener('click', () => {
   if (!state.selectedMaterial) return;
-  // avoid duplicates
   if (!state.materials.find(m => m.name === state.selectedMaterial)) {
     state.materials.push({ name: state.selectedMaterial });
   }
@@ -1635,14 +1706,9 @@ const emailWrap = document.getElementById('email-wrap');
 sendBtn.addEventListener('click', () => {
   const email = emailInput.value.trim();
   if (!email || !email.includes('@')) return;
-  // animate: show sent message
   emailWrap.style.display = 'none';
   sentMsg.style.display = 'block';
-  // open PDF in new tab after brief delay
-  setTimeout(() => {
-    openPDF();
-  }, 600);
-  // reset after 3s
+  setTimeout(() => { openPDF(); }, 600);
   setTimeout(() => {
     sentMsg.style.display = 'none';
     emailWrap.style.display = 'block';
@@ -1651,15 +1717,6 @@ sendBtn.addEventListener('click', () => {
 });
 
 function openPDF() {
-  // encode state into query params for PDF page
-  const params = new URLSearchParams({
-    type: state.jewelryType,
-    name: state.projectName,
-    gems: JSON.stringify(state.gemstones.map(g => ({c: g.color, cn: g.colorName, cut: g.cutName}))),
-    mats: JSON.stringify(state.materials.map(m => m.name)),
-    imgs: JSON.stringify(state.images.slice(0,6)), // pass up to 6 images
-  });
-  // Use sessionStorage to pass large data
   sessionStorage.setItem('cdi_project', JSON.stringify({
     jewelryType: state.jewelryType,
     projectName: state.projectName,
@@ -1671,8 +1728,25 @@ function openPDF() {
 }
 
 // ============================================================
+// EDIT PROJECT BUTTON — returns to last step that has content
+// ============================================================
+function handleEditProject() {
+  if (state.materials.length > 0) {
+    goToPage(3);
+  } else if (state.gemstones.length > 0) {
+    goToPage(2);
+  } else if (state.images.length > 0) {
+    goToPage(1);
+  } else {
+    goToPage(0);
+  }
+}
+document.getElementById('btn-edit-project').addEventListener('click', handleEditProject);
+
+// ============================================================
 // INIT
 // ============================================================
+initCastleIcons();
 initGemGrids();
 updateProjectZones();
 </script>
