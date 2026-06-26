@@ -477,9 +477,108 @@
     .scrollable-content { padding-bottom: 520px; }
   }
 
+  /* MOBILE FOOTER COLLAPSE */
+  .footer-handle {
+    display: none; /* hidden on desktop */
+  }
+
+  @media (max-width: 768px) {
+    .footer-handle {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 8px 0 4px;
+      cursor: pointer;
+    }
+    .footer-handle-bar {
+      width: 36px;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--dark-leather);
+      opacity: 0.35;
+      transition: opacity 0.2s;
+    }
+    .footer-handle:hover .footer-handle-bar { opacity: 0.6; }
+
+    /* Collapsed state — footer shrinks to just the handle bar */
+    .sticky-footer.collapsed {
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+    .sticky-footer.collapsed .footer-inner {
+      opacity: 0;
+      pointer-events: none;
+      max-height: 0;
+      overflow: hidden;
+    }
+    .sticky-footer .footer-inner {
+      max-height: 600px;
+      transition: max-height 0.35s ease, opacity 0.25s ease;
+      overflow: hidden;
+    }
+    .sticky-footer.collapsed .footer-handle-bar { opacity: 0.55; }
+  }
+
   /* TRANSITIONS */
   .page-transition { animation: fadeIn 0.35s ease; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* STEP INSTRUCTION BLOCK */
+  .step-instruction {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 32px 0 8px;
+    animation: fadeIn 0.3s ease;
+  }
+  .step-instruction-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1.5px solid var(--dark-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--dark-gold);
+    font-weight: 400;
+    flex-shrink: 0;
+  }
+  .step-instruction-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(20px, 2.5vw, 28px);
+    color: var(--dark-gold);
+    font-weight: 400;
+    line-height: 1.15;
+  }
+  .step-instruction-copy {
+    font-size: 13px;
+    color: var(--dark-leather);
+    line-height: 1.75;
+    font-weight: 300;
+    max-width: 560px;
+  }
+
+  /* Instruction inside a selection card tray */
+  .card-instruction {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: fadeIn 0.3s ease;
+  }
+  .card-instruction .step-instruction-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  .card-instruction .step-instruction-title {
+    font-size: 16px;
+  }
+  .card-instruction .step-instruction-copy {
+    font-size: 12px;
+  }
 </style>
 </head>
 <body>
@@ -524,6 +623,7 @@
   <div class="scrollable-content" style="height: 220px;"></div>
   <!-- FOOTER -->
   <div class="sticky-footer" id="footer-first">
+  <div class="footer-handle" aria-label="Toggle footer"><div class="footer-handle-bar"></div></div>
     <div class="footer-inner">
       <div class="footer-left">
         <div class="footer-label">Select the type of Jewelry</div>
@@ -572,6 +672,7 @@
   <input type="file" id="file-input" accept="image/*" multiple>
   <!-- FOOTER -->
   <div class="sticky-footer">
+  <div class="footer-handle" aria-label="Toggle footer"><div class="footer-handle-bar"></div></div>
     <div class="footer-inner">
       <div class="footer-left">
         <div class="upload-zone" id="upload-zone">
@@ -619,6 +720,7 @@
   </div>
   <!-- FOOTER -->
   <div class="sticky-footer" id="footer-third">
+  <div class="footer-handle" aria-label="Toggle footer"><div class="footer-handle-bar"></div></div>
     <div class="footer-inner">
       <div class="footer-left" style="padding-right:0;">
         <div class="gem-footer">
@@ -683,6 +785,7 @@
   </div>
   <!-- FOOTER -->
   <div class="sticky-footer">
+  <div class="footer-handle" aria-label="Toggle footer"><div class="footer-handle-bar"></div></div>
     <div class="footer-inner">
       <div class="footer-left">
         <div class="footer-label" style="text-align:center;">Select the Material</div>
@@ -1443,24 +1546,73 @@ function checkGemReady() {
 // ============================================================
 // PROJECT ZONE UPDATE
 // ============================================================
+// ============================================================
+// STEP INSTRUCTIONS — shown when a zone/tray has no content yet
+// ============================================================
+const STEP_INSTRUCTIONS = {
+  first: {
+    num: '1',
+    title: 'Jewelry Type & Name',
+    copy: "Let's start by defining a jewelry's type you want to create and a name for this project.\nUse the menu below to select a jewelry's type and the text bar to name it.",
+  },
+  second: {
+    num: '2',
+    title: 'References & Inspiration',
+    copy: 'Help us visualize what you have in mind by uploading images that carry some design that you want in your creation or inspirations from what we can use as a starting point to your unique design.',
+  },
+};
+
+function stepInstructionHTML(step, isCard = false) {
+  const s = STEP_INSTRUCTIONS[step];
+  const cls = isCard ? 'card-instruction' : 'step-instruction';
+  return `
+    <div class="${cls}">
+      <div class="step-instruction-icon">${s.num}</div>
+      <div class="step-instruction-title">${s.title}</div>
+      <div class="step-instruction-copy">${s.copy.replace(/\n/g, '<br>')}</div>
+    </div>`;
+}
+
+function cardInstructionHTML(num, title, copy) {
+  return `
+    <div class="card-instruction">
+      <div class="step-instruction-icon">${num}</div>
+      <div class="step-instruction-title">${title}</div>
+      <div class="step-instruction-copy">${copy}</div>
+    </div>`;
+}
+
 function updateProjectZones() {
+  const hasInput = state.jewelryType || state.projectName;
+
+  // Zones for steps 1–4 and final
   const zones = ['first','second','third','fourth','final'];
   zones.forEach(z => {
     const outer = document.getElementById(`${z}-project-zone`);
     if (!outer) return;
     const inner = outer.querySelector('.project-zone-inner');
     if (!inner) return;
-    const infoHtml = (state.jewelryType || state.projectName) ? `
+
+    // Project info HTML (type + name)
+    const infoHtml = hasInput ? `
       ${state.jewelryType ? `<div class="project-type">${state.jewelryType}</div>` : ''}
       ${state.projectName ? `<h2 class="project-name title-font">${state.projectName}</h2>` : ''}
     ` : '';
-    if (z === 'final') {
-      // Keep the edit button; only update the info prefix
+
+    if (z === 'first') {
+      // Show instruction if nothing selected yet, otherwise show project info
+      inner.innerHTML = hasInput ? infoHtml : stepInstructionHTML('first');
+    } else if (z === 'second') {
+      // Always show project info (carried from step 1), then instruction if no images yet
+      const imageInstruction = state.images.length === 0
+        ? stepInstructionHTML('second')
+        : '';
+      inner.innerHTML = infoHtml + imageInstruction;
+    } else if (z === 'final') {
       inner.innerHTML = infoHtml + `
         <button class="btn-edit-project" id="btn-edit-project">
           <span class="edit-arrow"></span>Edit Project
         </button>`;
-      // Re-attach listener after innerHTML reset
       document.getElementById('btn-edit-project').addEventListener('click', handleEditProject);
     } else {
       inner.innerHTML = infoHtml;
@@ -1510,6 +1662,15 @@ function renderGemstoneDisplays() {
     const el = document.getElementById(id);
     if (!el) return;
     el.innerHTML = '';
+    // Show instruction only in step 3's tray when empty
+    if (state.gemstones.length === 0 && id === 'gemstone-selected-display') {
+      el.innerHTML = cardInstructionHTML(
+        '3',
+        'Gemstones Selection',
+        'Use the options below to let us know what will be the protagonist of your creation.'
+      );
+      return;
+    }
     state.gemstones.forEach((g, idx) => {
       const wrap = document.createElement('div');
       wrap.className = 'selected-gem';
@@ -1537,6 +1698,15 @@ function renderMaterialDisplays() {
     const el = document.getElementById(id);
     if (!el) return;
     el.innerHTML = '';
+    // Show instruction only in step 4's tray when empty
+    if (state.materials.length === 0 && id === 'material-selected-display') {
+      el.innerHTML = cardInstructionHTML(
+        '4',
+        'Material Selection',
+        'Now, it is time to choose what material we will use to put everything together.'
+      );
+      return;
+    }
     state.materials.forEach((m, idx) => {
       const wrap = document.createElement('div');
       wrap.className = 'selected-material';
@@ -1578,7 +1748,20 @@ function checkStep4Nav() {
 const pages = ['first','second','third','fourth','final'];
 let currentPage = 0;
 
+function scrollToFooter() {
+  // Scroll so the top of the sticky footer area is visible —
+  // i.e. scroll to near the bottom of the page content
+  requestAnimationFrame(() => {
+    const footer = document.querySelector('.sticky-footer');
+    if (!footer) return;
+    const footerH = footer.offsetHeight;
+    const targetY = document.documentElement.scrollHeight - window.innerHeight - footerH;
+    window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+  });
+}
+
 function goToPage(idx) {
+  const isForward = idx > currentPage;
   pages.forEach((p, i) => {
     const el = document.getElementById(`page-${p}`);
     el.classList.remove('active','page-transition');
@@ -1588,7 +1771,18 @@ function goToPage(idx) {
     }
   });
   currentPage = idx;
-  window.scrollTo(0,0);
+
+  if (isForward) {
+    // Scroll to bottom so user sees the action area / footer
+    window.scrollTo(0, 0);
+    setTimeout(scrollToFooter, 60);
+  } else {
+    window.scrollTo(0, 0);
+  }
+
+  // Expand footer on mobile when navigating
+  expandFooter();
+
   if (idx >= 1) renderImageGrids();
   if (idx >= 2) renderGemstoneDisplays();
   if (idx >= 3) { renderGemstoneDisplays(); renderMaterialDisplays(); }
@@ -1599,14 +1793,75 @@ function goToPage(idx) {
   }
 }
 
+// ============================================================
+// MOBILE FOOTER COLLAPSE — threshold-based (60px upward scroll)
+// ============================================================
+const COLLAPSE_THRESHOLD = 60; // px of upward scroll before collapsing
+let lastScrollY = 0;
+let scrollUpAccum = 0;
+let footerCollapsed = false;
+
+function isMobile() {
+  return window.innerWidth <= 768;
+}
+
+function collapseFooter() {
+  if (footerCollapsed) return;
+  footerCollapsed = true;
+  document.querySelectorAll('.sticky-footer').forEach(f => f.classList.add('collapsed'));
+}
+
+function expandFooter() {
+  if (!footerCollapsed) return;
+  footerCollapsed = false;
+  document.querySelectorAll('.sticky-footer').forEach(f => f.classList.remove('collapsed'));
+}
+
+window.addEventListener('scroll', () => {
+  if (!isMobile()) return;
+
+  const currentY = window.scrollY;
+  const delta = currentY - lastScrollY;
+
+  if (delta < 0) {
+    // Scrolling up — accumulate
+    scrollUpAccum += Math.abs(delta);
+    if (scrollUpAccum >= COLLAPSE_THRESHOLD && !footerCollapsed) {
+      collapseFooter();
+    }
+  } else if (delta > 0) {
+    // Scrolling down — reset accumulator and expand
+    scrollUpAccum = 0;
+    if (footerCollapsed) {
+      expandFooter();
+    }
+  }
+
+  lastScrollY = currentY;
+}, { passive: true });
+
+// Tapping the handle always toggles
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.footer-handle')) {
+    if (footerCollapsed) {
+      expandFooter();
+    } else {
+      collapseFooter();
+    }
+  }
+});
+
+// Re-expand footer on resize back to desktop
+window.addEventListener('resize', () => {
+  if (!isMobile()) {
+    expandFooter();
+    scrollUpAccum = 0;
+  }
+});
+
 window.addEventListener('load', () => {
-  setTimeout(() => {
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      left: 0,
-      behavior: 'smooth'
-    });
-  }, 80);
+  lastScrollY = window.scrollY;
+  setTimeout(scrollToFooter, 80);
 });
 
 // ============================================================
@@ -1662,6 +1917,7 @@ function handleFiles(files) {
       if (loaded === files.length) {
         showLoading(false);
         renderImageGrids();
+        updateProjectZones();
         checkStep2Nav();
       }
     };
@@ -1786,6 +2042,8 @@ document.getElementById('btn-edit-project').addEventListener('click', handleEdit
 // ============================================================
 initGemGrids();
 updateProjectZones();
+renderGemstoneDisplays();
+renderMaterialDisplays();
 </script>
 </body>
 </html>
