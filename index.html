@@ -1945,14 +1945,10 @@ document.getElementById('btn-add-gem').addEventListener('click', () => {
   state.gemstones.push({ color: gc.color, colorName: gc.name, cut: state.selectedGemCut, cutName: cut.name });
   state.selectedGemColor = null;
   state.selectedGemCut = null;
-  document.querySelectorAll('.gem-icon-wrap').forEach(d => d.classList.remove('selected'));
-  document.querySelectorAll('[id^="gem-cut-icon-"]').forEach((el, i) => {
-    el.classList.remove('selected');
-    const cutName = gemCuts[i].name;
-    if (cutName === 'Cushion' || cutName === 'Emerald') {
-      el.innerHTML = SVG_ASSETS['CutType-Icon-Default'];
-    }
-  });
+  // Deselect all gem color dots
+  document.querySelectorAll('.gem-dot').forEach(d => d.classList.remove('selected'));
+  // Deselect all cut type icons
+  document.querySelectorAll('.gem-cut-icon').forEach(el => el.classList.remove('selected'));
   document.getElementById('btn-add-gem').classList.remove('ready');
   renderGemstoneDisplays();
   checkStep3Nav();
