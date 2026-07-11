@@ -493,37 +493,11 @@
     }
     .gem-color-grid::-webkit-scrollbar,
     .gem-cut-grid::-webkit-scrollbar { display: none; }
+    /* Removed gradient indicators per user request */
     .gem-color-grid::before,
     .gem-color-grid::after,
     .gem-cut-grid::before,
-    .gem-cut-grid::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 28px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-    .gem-color-grid.has-overflow::before,
-    .gem-cut-grid.has-overflow::before {
-      opacity: 1;
-    }
-    .gem-color-grid.has-overflow::after,
-    .gem-cut-grid.has-overflow::after {
-      opacity: 1;
-    }
-    .gem-color-grid::before,
-    .gem-cut-grid::before {
-      left: 0;
-      background: linear-gradient(90deg, rgba(232,230,225,1), rgba(232,230,225,0));
-    }
-    .gem-color-grid::after,
-    .gem-cut-grid::after {
-      right: 0;
-      background: linear-gradient(270deg, rgba(232,230,225,1), rgba(232,230,225,0));
-    }
+    .gem-cut-grid::after { display: none; }
     .gem-color-grid .gem-color-item,
     .gem-cut-grid .gem-cut-item {
       flex-shrink: 0;
