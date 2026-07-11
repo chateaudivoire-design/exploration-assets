@@ -312,9 +312,9 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* STEP 3 FOOTER */
-  .gem-footer { display: flex; gap: 32px; flex: 1; }
-  .gem-section { flex: 1; min-width: 0; }
-  .gem-color-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px 8px; margin-top: 10px; }
+  .gem-footer { display: flex; gap: 32px; flex: 1; min-width: 0; width: 100%; }
+  .gem-section { flex: 1; min-width: 0; width: 100%; }
+  .gem-color-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px 8px; margin-top: 10px; min-width: 0; width: 100%; }
   .gem-color-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
   .gem-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; transition: all 0.2s; }
   .gem-dot.selected { border-color: var(--dark-gold); box-shadow: 0 0 0 2px var(--dark-gold); }
@@ -464,39 +464,73 @@
     .project-zone { padding: 20px 20px 16px; }
     .main-content { padding: 0 20px 24px; }
     .sticky-footer { padding: 16px 20px; }
-    .footer-inner { flex-wrap: wrap; }
+    .footer-inner { flex-wrap: wrap; align-items: stretch; }
+    .footer-left { flex: none; width: 100%; min-width: 0; }
     .footer-divider { display: none; }
-    .footer-right { flex-direction: row; justify-content: space-between; width: 100%; margin-top: 12px; }
+    .footer-right { flex: none; width: 100%; min-width: 0; flex-direction: row; justify-content: space-between; margin-top: 12px; }
     .image-grid { grid-template-columns: 1fr; }
     .image-grid .image-box img { height: 260px; }
-    .gem-footer { flex-direction: column; gap: 16px; overflow: visible; }
+    .gem-footer { flex-direction: column; gap: 16px; overflow: visible; width: 100%; }
+    .gem-section { width: 100%; min-width: 0; }
 
     /* Single horizontally scrollable row for gem selectors on mobile */
-    .gem-color-grid {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      gap: 12px;
-      padding-bottom: 6px;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .gem-color-grid::-webkit-scrollbar { display: none; }
-    .gem-color-grid .gem-color-item { flex-shrink: 0; }
-
+    .gem-color-grid,
     .gem-cut-grid {
+      position: relative;
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
       overflow-x: auto;
-      gap: 10px;
-      padding-bottom: 6px;
+      overflow-y: hidden;
+      gap: 12px;
+      padding: 6px 12px 6px 12px;
+      min-width: 100%;
+      width: 100%;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
+      touch-action: pan-x;
+      scroll-snap-type: x proximity;
     }
+    .gem-color-grid::-webkit-scrollbar,
     .gem-cut-grid::-webkit-scrollbar { display: none; }
-    .gem-cut-grid .gem-cut-item { flex-shrink: 0; }
+    .gem-color-grid::before,
+    .gem-color-grid::after,
+    .gem-cut-grid::before,
+    .gem-cut-grid::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 28px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .gem-color-grid.has-overflow::before,
+    .gem-cut-grid.has-overflow::before {
+      opacity: 1;
+    }
+    .gem-color-grid.has-overflow::after,
+    .gem-cut-grid.has-overflow::after {
+      opacity: 1;
+    }
+    .gem-color-grid::before,
+    .gem-cut-grid::before {
+      left: 0;
+      background: linear-gradient(90deg, rgba(232,230,225,1), rgba(232,230,225,0));
+    }
+    .gem-color-grid::after,
+    .gem-cut-grid::after {
+      right: 0;
+      background: linear-gradient(270deg, rgba(232,230,225,1), rgba(232,230,225,0));
+    }
+    .gem-color-grid .gem-color-item,
+    .gem-cut-grid .gem-cut-item {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      padding: 4px 0;
+    }
+    .gem-cut-grid { gap: 10px; }
     .confirmator-inner { flex-direction: column; }
     .confirmator-divider { display: none; }
     .selection-cards { grid-template-columns: 1fr; }
@@ -1549,6 +1583,17 @@ function initGemGrids() {
     item.addEventListener('click', () => selectGemCut(i));
     cutGrid.appendChild(item);
   });
+
+  updateGemGridIndicators();
+}
+
+function updateGemGridIndicators() {
+  ['gem-color-grid', 'gem-cut-grid'].forEach(id => {
+    const grid = document.getElementById(id);
+    if (!grid) return;
+    const hasOverflow = grid.scrollWidth > grid.clientWidth + 1;
+    grid.classList.toggle('has-overflow', hasOverflow);
+  });
 }
 
 function selectGemColor(idx) {
@@ -1887,11 +1932,13 @@ window.addEventListener('resize', () => {
     expandFooter();
     scrollUpAccum = 0;
   }
+  updateGemGridIndicators();
 });
 
 window.addEventListener('load', () => {
   lastScrollY = window.scrollY;
   setTimeout(scrollToFooter, 80);
+  updateGemGridIndicators();
 });
 
 // ============================================================
