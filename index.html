@@ -506,7 +506,36 @@
     }
     .gem-cut-grid { gap: 10px; }
     .confirmator-inner { flex-direction: column; }
-    .confirmator-divider { display: none; }
+    /* Show a horizontal divider between the email block and content on mobile */
+    .confirmator-divider {
+      display: block;
+      width: 100%;
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 18px 0;
+      align-self: stretch;
+      flex-shrink: 0;
+    }
+    .email-field-wrap { margin-bottom: 14px; }
+    /* Center the confirmator left column on mobile for better visual balance */
+    .confirmator-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .confirmator-left .confirmator-subtitle,
+    .confirmator-left .confirmator-body {
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .confirmator-left .confirmator-actions {
+      justify-content: center;
+      gap: 12px;
+    }
     .selection-cards { grid-template-columns: 1fr; }
     .site-nav { padding: 12px 20px; }
     .scrollable-content { padding-bottom: 520px; }
