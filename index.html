@@ -470,7 +470,33 @@
     .image-grid { grid-template-columns: 1fr; }
     .image-grid .image-box img { height: 260px; }
     .gem-footer { flex-direction: column; gap: 16px; }
-    .gem-color-grid { grid-template-columns: repeat(6, 1fr); }
+
+    /* Single horizontally scrollable row for gem selectors on mobile */
+    .gem-color-grid {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 12px;
+      padding-bottom: 6px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .gem-color-grid::-webkit-scrollbar { display: none; }
+    .gem-color-grid .gem-color-item { flex-shrink: 0; }
+
+    .gem-cut-grid {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 10px;
+      padding-bottom: 6px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .gem-cut-grid::-webkit-scrollbar { display: none; }
+    .gem-cut-grid .gem-cut-item { flex-shrink: 0; }
     .confirmator-inner { flex-direction: column; }
     .confirmator-divider { display: none; }
     .selection-cards { grid-template-columns: 1fr; }
