@@ -217,7 +217,7 @@
     display: flex; align-items: flex-start; gap: 0;
     max-width: 1200px; margin: 0 auto;
   }
-  .footer-left { flex: 1; padding-right: 32px; }
+  .footer-left { flex: 1; padding-right: 32px; min-width: 0; }
   .footer-divider { width: var(--stroke); background: #c8c4bc; align-self: stretch; margin: 0 32px; flex-shrink: 0; }
   .footer-right { display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 140px; }
 
@@ -313,7 +313,7 @@
 
   /* STEP 3 FOOTER */
   .gem-footer { display: flex; gap: 32px; flex: 1; }
-  .gem-section { flex: 1; }
+  .gem-section { flex: 1; min-width: 0; }
   .gem-color-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px 8px; margin-top: 10px; }
   .gem-color-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
   .gem-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; transition: all 0.2s; }
@@ -469,7 +469,7 @@
     .footer-right { flex-direction: row; justify-content: space-between; width: 100%; margin-top: 12px; }
     .image-grid { grid-template-columns: 1fr; }
     .image-grid .image-box img { height: 260px; }
-    .gem-footer { flex-direction: column; gap: 16px; }
+    .gem-footer { flex-direction: column; gap: 16px; overflow: visible; }
 
     /* Single horizontally scrollable row for gem selectors on mobile */
     .gem-color-grid {
@@ -542,7 +542,9 @@
     .sticky-footer .footer-inner {
       max-height: 600px;
       transition: max-height 0.35s ease, opacity 0.25s ease;
-      overflow: hidden;
+      /* allow horizontal scroll inside gem grids while keeping collapse animation */
+      overflow-x: visible;
+      overflow-y: visible;
     }
     .sticky-footer.collapsed .footer-handle-bar { opacity: 0.55; }
   }
