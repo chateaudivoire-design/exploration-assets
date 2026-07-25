@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" width="210.73" height="208.58" viewBox="0 0 210.73 208.58">
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g>
+      <path d="M102.94,19.51c-9.25-3.14-29.4-11.18-46.48-15.99-15.25-4.3-31.65.73-41.71,12.98C6.34,26.73,3.19,35.87,2.27,47.58c-1.59,20.38,3.91,40.64,14.74,57.97,22.98,36.78,60.56,80.57,88.33,100.57,27.74-20.07,65.43-63.68,88.42-100.5,10.84-17.34,16.3-37.63,14.7-58.04-.91-11.7-4.04-20.82-12.43-31.07-10.02-12.24-26.38-17.24-41.59-13.01-17.13,4.74-37.34,12.73-46.73,15.99-1.55.54-3.21.54-4.76.01Z" style="fill: none; stroke: #364b37; stroke-miterlimit: 10; stroke-width: 4px;"/>
+      <path d="M105.41,34.3l-23.29,13.68,23.24,11.7,23.31-11.7-23.27-13.68Z" style="fill: none; stroke: #364b37; stroke-linejoin: bevel; stroke-width: 4px;"/>
+      <path d="M82.13,47.99l-21.55-6.48,21.46-29.44,23.37,22.24-23.28,13.68Z" style="fill: none; stroke: #364b37; stroke-linejoin: bevel; stroke-width: 4px;"/>
+      <path d="M128.68,47.99l21.17-6.48-21.17-29.44-23.27,22.24" style="fill: none; stroke: #364b37; stroke-linejoin: bevel; stroke-width: 4px;"/>
+      <path d="M105.41,139.26l-23.29,11.01,23.21,55.85,23.35-55.85-23.27-11.01Z" style="fill: none; stroke: #364b37; stroke-linejoin: bevel; stroke-width: 4px;"/>
+      <path d="M49.37,150.27h32.76v-26.11" style="fill: none; stroke: #364b37; stroke-linejoin: bevel; stroke-width: 4px;"/>
+      <path d="M161.38,150.27h-32.69v-26.11" style="fill: none; stroke: #364b37; stroke-linejoin: bevel; stroke-width: 4px;"/>
+      <path d="M60.57,163.48v-57.18l-22.41-27.06-13.28,38.36h47.11l33.41,21.65,33.4-21.65h47.11l-13.34-38.36-22.73,27.05v57.51" style="fill: none; stroke: #364b37; stroke-linejoin: bevel; stroke-width: 4px;"/>
+      <path d="M72,117.61l-11.43-11.29V41.51H3l35.17,37.73s8.37-29.9,43.96-31.26" style="fill: none; stroke: #364b37; stroke-linejoin: bevel; stroke-width: 4px;"/>
+      <path d="M207.73,41.51h-57.88v64.78l-11.04,11.32" style="fill: none; stroke: #364b37; stroke-linejoin: bevel; stroke-width: 4px;"/>
+      <path d="M138.81,117.61l11.42-11.29V41.51h57.57l-35.16,37.73s-8.38-29.9-43.96-31.26" style="fill: none; stroke: #364b37; stroke-linejoin: bevel; stroke-width: 4px;"/>
+    </g>
+  </g>
+</svg>
